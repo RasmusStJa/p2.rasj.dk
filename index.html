@@ -4,23 +4,23 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>P2 PROJECT</title>
-        <link rel="stylesheet" href="public/styles.css">
+        <!-- Core layout and component styles -->
+        <link rel="stylesheet" href="/src/styles.css" />
+        <!-- Theme-specific stylesheet (loaded dynamically) -->
+        <link id="themeStylesheet" rel="stylesheet" href="/src/lightmode.css" />
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     </head>
     <body>
-        <div class="topnav">
-            <a href="#home" onclick="loadContent('home')" class="active">Home</a>
-            <a href="#login" onclick="loadContent('login')">Login</a>
-            <a href="#signup" onclick="loadContent('signup')">Signup</a>
-            <a href="#feed" onclick="loadContent('feed')">Feed</a>
-            <a href="#profile" onclick="loadContent('profile')">Profile</a>
-        </div>
+        <nav id="navbar"></nav>
 
         <div id="content">
             <!-- Content dynamically loaded here -->
         </div>
 
 
-        <script src="public/script.js"></script>
+        <script src="/src/script.js"></script>
+        <script src="/src/navbar.js"></script>
     </body>
     </html>
     
