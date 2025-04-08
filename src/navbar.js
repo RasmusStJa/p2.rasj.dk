@@ -17,7 +17,7 @@ fetch('/src/navbar.html')
         });
 
         function setTheme(mode) {
-          themeLink.setAttribute('href', `/src/${mode}mode.css`);
+          themeLink.setAttribute('href', `/src/styles/${mode}mode.css`);
           localStorage.setItem('theme', mode);
           document.getElementById('modeToggle').innerHTML =
             mode === 'dark'

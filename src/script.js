@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   
     function setTheme(mode) {
-      themeLink.setAttribute('href', `/src/${mode}mode.css`);
+      themeLink.setAttribute('href', `/src/styles/${mode}mode.css`);
       localStorage.setItem('theme', mode);
       document.getElementById('modeToggle').innerHTML =
         mode === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
