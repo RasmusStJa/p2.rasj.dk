@@ -1,23 +1,4 @@
-/* Base colors */
-:root {
-    --bg-color: #fff;
-    --text-color: #2c3e50;
-    --subtext-color: #666;
-    --bio-color: #444;
-    --email-color: #333;
-    --tag-bg: #e3f2fd;
-    --tag-color: #007acc;
-    --link-color: #007acc;
-    --btn-bg: #4CAF50;
-    --btn-text: #fff;
-    --btn-following: #d9534f;
-    --modal-bg: #fff;
-    --shadow: rgba(0, 0, 0, 0.08);
-    --badge-bg: #4CAF50;
-    --topnav: linear-gradient(to bottom, #ffffff, #e0e0e0);
-    --logo: linear-gradient(to bottom, #464646, #333);
-    --mode: #333;
-  }
+@import './variables.css';
   
 body {
     font-family: Arial, sans-serif;
@@ -42,6 +23,17 @@ body {
     font-size: 20px;
     color: var(--mode);
     cursor: pointer;
+    width: 3rem; 
+    height: 3rem; 
+    justify-content: center;
+    align-items: center;
+    z-index: 20; 
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .mode-toggle:hover {
+    transform: scale(1.2);
+    transition: transform 0.3s ease-in-out;
   }
 
 
@@ -112,7 +104,7 @@ body {
 .logo .project-name {
     font-weight: bold;
     text-shadow: none;
-    color: var(--modal-bg);
+    color: var(--form-bg);
 }
 
 
@@ -122,11 +114,11 @@ body {
 .formSection {
     text-align: center;
     padding: 30px;
-    background: white;
+    background: var(--form-bg);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 300px;
-    color: #000000;
+    color: var(--text-color);
 }
 
 form {
@@ -141,15 +133,20 @@ input[type="text"], input[type="email"], input[type="password"]  {
     font-size: 16px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    background-color: var(--bg-color);
+    color:var(--text-color);
 }
 
 form button {
     padding: 12px;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
+    margin-top: 10px;
+    transition: background 0.3s;
+    font-weight: bold;
 }
 
 #signupBtn {
@@ -167,6 +164,38 @@ form button {
 #loginBtn:hover {
     background-color: #45a049;
 }
+
+  .login-btn {
+    background-color: #007bff;
+  }
+  
+.login-btn:hover {
+    background-color: #0056b3;
+  }
+
+.signup-btn {
+    background-color: #00b351;
+  }
+  
+.signup-btn:hover {
+    background-color: #00c659;
+  }
+
+    .login-btn {
+    background-color: #007bff;
+  }
+  
+.login-btn:hover {
+    background-color: #0056b3;
+  }
+
+.signup-btn {
+    background-color: #00b351;
+  }
+  
+.signup-btn:hover {
+    background-color: #00c659;
+  }
 
 
 
@@ -235,7 +264,7 @@ form button {
   .tag {
     display: inline-block;
     background: var(--tag-bg);
-    color: var(--tag-color);
+    color: var(--link-color);
     padding: 5px 10px;
     margin: 2px 5px 2px 0;
     border-radius: 12px;
@@ -281,7 +310,7 @@ form button {
   }
   
   .modal-content {
-    background-color: var(--modal-bg);
+    background-color: var(--form-bg);
     margin: 10% auto;
     padding: 24px;
     border-radius: 12px;
@@ -296,4 +325,22 @@ form button {
     right: 12px;
     font-size: 1.2em;
     cursor: pointer;
+  }
+
+  
+  .topnav {
+    box-shadow: var(--shadow-nav);
+  }
+  
+  .nav-links a:hover {
+    background-color: var(--nav-hover);
+  }
+  
+  .logo {
+    box-shadow: var(--shadow-logo);
+  }
+  
+  /* Profile Section */
+  .profile-card {
+    box-shadow: var(--shadow-logo);
   }
