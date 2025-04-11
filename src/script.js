@@ -32,27 +32,3 @@ function loadContentFromLogo() {
 
 // Load Home section by default when the page loads
 window.onload = () => loadContent('home');
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const toggleBtn = document.getElementById('modeToggle');
-    const themeLink = document.getElementById('themeStylesheet');
-  
-    // Load saved mode from localStorage
-    const savedMode = localStorage.getItem('theme') || 'light';
-    setTheme(savedMode);
-  
-    toggleBtn.addEventListener('click', () => {
-      const currentTheme = themeLink.getAttribute('href').includes('dark') ? 'dark' : 'light';
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      setTheme(newTheme);
-    });
-  
-    function setTheme(mode) {
-      themeLink.setAttribute('href', `/src/styles/${mode}mode.css`);
-      localStorage.setItem('theme', mode);
-      document.getElementById('modeToggle').innerHTML =
-        mode === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
-    }
-  });
-  
