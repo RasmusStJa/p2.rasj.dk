@@ -21,5 +21,14 @@ function loadContent(section) {
         });
 }
 
+function loadContentFromLogo() {
+  loadContent('home');
+
+  // Ensure the 'Home' nav link gets the active class
+  document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+  document.querySelector('.nav-links a[href="#home"]')?.classList.add('active');
+}
+
+
 // Load Home section by default when the page loads
 window.onload = () => loadContent('home');
