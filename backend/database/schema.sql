@@ -16,7 +16,7 @@ CREATE TABLE friends (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, friend_id)
 );
-
+/*
 INSERT INTO users (username, email,password_hash, role)
 VALUES
 ('dummy_user1','dummy_email1','dummy_hash1','test'),
@@ -26,3 +26,4 @@ INSERT INTO friends (user_id, friend_id)
 VALUES
 (1,2),
 (1,3);
+*/

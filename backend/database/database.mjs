@@ -238,7 +238,7 @@ console.log(await create_user('dummy_user3','dummy_email3','dummy_hash3','test')
 console.log(await get_users());
 console.log(await delete_user('dummy_email3'));
 console.log(await get_users());
-*/
+
 
 console.log(await get_friends())
 console.log(await create_friend(2, 3))
@@ -247,12 +247,17 @@ console.log(await accepted_friendship(2, 3))
 console.log(await get_friends())
 console.log(await delete_friendship(2,3))
 console.log(await get_friends())
-
+*/
 export {
   get_users,
   get_user_by_id,
   get_user_by_name,
   get_user_by_email,
   create_user,
-  delete_user
+  delete_user,
+  get_friends,
+  get_friends_by_user_id,
+  create_friend,
+  delete_friendship,
+  accepted_friendship
 };
