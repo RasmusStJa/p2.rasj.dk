@@ -30,6 +30,7 @@ process.on('SIGINT', async () => {
 });
 
 
+//user functions
 
 async function get_users() {
   console.log('Fetching all users')
@@ -125,7 +126,110 @@ async function delete_user(email) {
 
 }
 
+async function get_friends() {
+  console.log('Fetching all friends')
+  try {
+    const [rows] = await Aa_pool.query("SELECT * FROM friends",)
+    return rows;
+  } 
+  catch (err) {
+    console.error('Error executing query', err);
+    return -1;
+  } 
+}
 
+async function get_friends_by_user_id(id) { 
+  const user = await get_user_by_id(id)
+  const user_email = user.email
+  console.log('Fetching friends by ' + user_email + "'s user_ID:", id) 
+  try{
+    const [rows] = await Aa_pool.query(`
+      SELECT *
+      FROM friends
+      WHERE user_id = ?
+      OR friend_id = ?`,
+      [id, id])
+    return rows;
+  }
+  catch(err){
+    console.error('Error executing query', err);
+    return -1;
+    } 
+}
+
+async function create_friend(user_id, friend_id) {
+  
+  
+  const user = await get_user_by_id(user_id)
+  const friend = await get_user_by_id(friend_id)
+  const user_email = user.email
+  const friend_email = friend.email
+  console.log('makeing '+ user_email + ' and ' + friend_email + ' frinds')
+  try{
+    const res = await Aa_pool.query(`
+      INSERT 
+      INTO friends (user_id, friend_id)
+      VALUES (?, ?)`,
+      [user_id, friend_id])
+      console.log(user_email + ' and ' + friend_email + ' are now pending frinds')
+    return 1; 
+  }
+  catch (err){
+    console.error('Error executing query', err);
+    return -1;
+  }
+
+}
+    
+async function delete_friendship(user_id, friend_id) {
+  const user = await get_user_by_id(user_id)
+  const friend = await get_user_by_id(friend_id)
+  const user_email = user.email
+  const friend_email = friend.email
+  console.log('Deleting '+ user_email + ' and ' + friend_email + ' friendship')
+  try{
+    const res = await Aa_pool.query(`
+      DELETE FROM friends
+      WHERE user_id = ?
+      AND friend_id = ?`,
+      [user_id, friend_id])
+      console.log(user_email + "'s and " + friend_email + "'s friendship is now over")
+    return 1; 
+  }
+  catch (err){
+    console.error('Error executing query', err);
+    return -1;
+  }
+}
+
+
+async function accepted_friendship(user_id, friend_id) {
+  const user = await get_user_by_id(user_id)
+  const friend = await get_user_by_id(friend_id)
+  const user_email = user.email
+  const friend_email = friend.email
+  console.log(user_email + ' and ' + friend_email + ' are becoming friends')
+  try{
+    const res = await Aa_pool.query(`
+      UPDATE friends 
+      SET status = 'accepted'
+      WHERE user_id = ?
+      AND friend_id = ?`,
+      [user_id, friend_id])
+      console.log(user_email + " and " + friend_email + " are now friends")
+    return 1; 
+  }
+  catch (err){
+    console.error('Error executing query', err);
+    return -1;
+  }
+}
+
+
+
+
+
+/*
 console.log(await get_user_by_id(1));
 console.log(await get_user_by_name("dummy_user1"));
 console.log(await get_user_by_email("dummy_email2"));
@@ -134,3 +238,21 @@ console.log(await create_user('dummy_user3','dummy_email3','dummy_hash3','test')
 console.log(await get_users());
 console.log(await delete_user('dummy_email3'));
 console.log(await get_users());
+*/
+
+console.log(await get_friends())
+console.log(await create_friend(2, 3))
+console.log(await get_friends_by_user_id(2))
+console.log(await accepted_friendship(2, 3))
+console.log(await get_friends())
+console.log(await delete_friendship(2,3))
+console.log(await get_friends())
+
+export {
+  get_users,
+  get_user_by_id,
+  get_user_by_name,
+  get_user_by_email,
+  create_user,
+  delete_user
+};
