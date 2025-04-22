@@ -43,7 +43,7 @@ body {
     background-color: var(--bg-color);
     border-bottom: 1px solid #ddd;
     padding: 0; 
-    overflow: hidden;
+    overflow: visible;
     position: fixed;
     top: 0;
     width: 100%;
@@ -164,41 +164,6 @@ form button {
 #loginBtn:hover {
     background-color: #45a049;
 }
-
-  .login-btn {
-    background-color: #007bff;
-  }
-  
-.login-btn:hover {
-    background-color: #0056b3;
-  }
-
-.signup-btn {
-    background-color: #00b351;
-  }
-  
-.signup-btn:hover {
-    background-color: #00c659;
-  }
-
-    .login-btn {
-    background-color: #007bff;
-  }
-  
-.login-btn:hover {
-    background-color: #0056b3;
-  }
-
-.signup-btn {
-    background-color: #00b351;
-  }
-  
-.signup-btn:hover {
-    background-color: #00c659;
-  }
-
-
-
 
 
 /* Profile Section */
@@ -340,7 +305,68 @@ form button {
     box-shadow: var(--shadow-logo);
   }
   
-  /* Profile Section */
   .profile-card {
     box-shadow: var(--shadow-logo);
   }
+
+
+
+  /* Notifications */ 
+  .hidden {
+    display: none;
+  }
+
+  .notification-wrapper {
+    position: relative; 
+    display: inline-block;
+  }
+  
+  .notification-dropdown {
+    position: absolute;
+    top: 175%; 
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--drop-down);
+    color: black;
+    padding: 10px;
+    width: 200px;
+    box-shadow: var(--box-shadow);
+    border-radius: 8px;
+    z-index: 9999;
+    text-align: center;
+  }
+  
+  .arrow-up {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 10px solid var(--drop-down);
+  }
+
+  .notification-icon {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: var(--mode);
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease-in-out;
+  }
+
+
+  .notification-icon:hover {
+    transform: scale(1.2);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .icons-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;  
+}
