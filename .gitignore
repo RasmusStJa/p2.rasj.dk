@@ -1,1 +1,42 @@
+# Dependencies
+node_modules/
 
+# Environment variables
+.env
+*.env.*
+
+# Logs
+*.log
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Compiled JavaScript (if you compile TypeScript to a 'dist' folder)
+# Adjust if you use a different output directory
+# dist/
+# *.js # Be cautious with this if JS files are also source files!
+# *.js.map # Source maps
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Optional Editor directories
+# .vscode/
+# .idea/
+
+# Optional test coverage
+# coverage/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+env/
+
+# Database Schema
+backend/schema.sql
