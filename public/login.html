@@ -1,10 +1,13 @@
 <div class="section">
     <div class="formSection">
         <h1>Login</h1>
-        <form>
-            <input type="email" placeholder="Email" required><br>
-            <input type="password" placeholder="Password" required><br>
+        <form id="login-form">
+            <input type="email" id="email" placeholder="Email" required><br>
+            <input type="password" id="password" placeholder="Password" required><br>
             <button type="submit" id="loginBtn">Login</button>
+            <p id="login-error" style="color: red; display: none;"></p>
         </form>
     </div>
 </div>
+
+<script src="../src/script.js" defer></script>
