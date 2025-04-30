@@ -11,6 +11,8 @@ import postRouter from './post/post.routes'; // Import the new post router
 
 // Import and configure database connection
 import pool from './db'; // Import the pool (ensures db.ts runs and connects)
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001; // Use environment variable or default
