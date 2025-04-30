@@ -60,7 +60,7 @@ function loadContentFromLogo() {
 
 async function loginUser(email, password) {
     try {
-        const response = await fetch('http://p2.rasj.dk:3001/auth/login', {
+        const response = await fetch('https://p2.rasj.dk:3001/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ function attachLoginListener() {
 
 async function signupUser(email, studentId, password) {
     try {
-        const response = await fetch('http://p2.rasj.dk:3001/auth/signup', {
+        const response = await fetch('https://p2.rasj.dk:3001/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
