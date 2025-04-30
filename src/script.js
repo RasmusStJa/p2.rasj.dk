@@ -31,13 +31,13 @@ function loadContent(section) {
             if (contentDiv) {
                 contentDiv.innerHTML = data;
                 // Attach listeners after a short delay to ensure elements are present
-                setTimeout(() => {
+                requestAnimationFrame(() => {
                     if (section === 'login') {
                         attachLoginListener();
                     } else if (section === 'signup') {
                         attachSignupListener();
                     }
-                }, 50);
+                });
             } else {
                 console.error('#content element became null before setting innerHTML!');
             }
