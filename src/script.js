@@ -115,7 +115,7 @@ function attachLoginListener() {
 
 async function signupUser(email, studentId, password) {
     try {
-        const response = await fetch('https://p2.rasj.dk:3001/auth/signup', {
+        const response = await fetch('/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
