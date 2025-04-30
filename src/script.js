@@ -69,7 +69,7 @@ function loadContentFromLogo() {
 // Function to handle the login API call
 async function loginUser(email, password) {
     try {
-        const response = await fetch('http://localhost:3001/auth/login', { // Make sure backend is running and accessible
+        const response = await fetch('http://p2.rasj.dk/auth/login', { // Make sure backend is running and accessible
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ function attachLoginListener() {
 async function signupUser(email, studentId, password) {
     try {
         // Adjust URL if backend is on a different port, e.g., 'http://localhost:3001/auth/signup'
-        const response = await fetch('http://localhost:3001/auth/signup', {
+        const response = await fetch('http://p2.rasj.dk/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
