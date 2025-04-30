@@ -184,12 +184,14 @@ async function delete_friendship(user_id, friend_id) {
   const user_email = user.email
   const friend_email = friend.email
   console.log('Deleting '+ user_email + ' and ' + friend_email + ' friendship')
+  
   try{
     const res = await Aa_pool.query(`
       DELETE FROM friends
-      WHERE user_id = ?
-      AND friend_id = ?`,
-      [user_id, friend_id])
+      WHERE (user_id = ? AND friend_id = ?)
+      OR (user_id = ? AND friend_id = ?)`,
+      [user_id, friend_id, friend_id, user_id])
+  
       console.log(user_email + "'s and " + friend_email + "'s friendship is now over")
     return 1; 
   }
