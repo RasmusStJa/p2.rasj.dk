@@ -11,6 +11,8 @@ import postRouter from './post/post.routes'; // Import the new post router
 
 // Import and configure database connection
 import pool from './db'; // Import the pool (ensures db.ts runs and connects)
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001; // Use environment variable or default
@@ -68,7 +70,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 
 // Start the server
-app.listen(port, () => {
+app.listen(port, '0.0.0.0'() => {
     console.log(`Server listening on port ${port}`);
     console.log(`Database host: ${process.env.DB_HOST}`); // Optional: Log DB host to confirm .env loaded
 }); 
