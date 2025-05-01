@@ -16,6 +16,7 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001; // Use environment variable or default
+app.set('trust proxy', 1);
 
 // Middleware Setup
 
