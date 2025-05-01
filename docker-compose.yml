@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile # Use the Dockerfile in the project root
     ports:
       - "8080:80" # Map port 8080 on your host machine to port 80 in the container (Nginx default)
+      - "443:443"
     restart: unless-stopped # Restart the container unless it's manually stopped
     depends_on:
       - backend # Ensures backend starts before frontend (optional, good practice)
