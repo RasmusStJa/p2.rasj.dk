@@ -115,7 +115,7 @@ function attachLoginListener() {
 
 async function signupUser(email, password) {
     try {
-        const response = await fetch('/auth/signup', {
+        const response = await fetch('/api/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
