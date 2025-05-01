@@ -15,6 +15,16 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
+
+// debug routes — remove these once we finish testing
+app.get('/test', (req, res) => {
+  res.json({ sawPath: req.path });
+});
+app.get('/api/test', (req, res) => {
+  res.json({ sawPath: req.path });
+});
+
+
 const port = parseInt(process.env.PORT || '3001', 10);
 app.set('trust proxy', 1);
 
