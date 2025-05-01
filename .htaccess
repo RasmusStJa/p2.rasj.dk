@@ -6,3 +6,17 @@
   AddHandler application/x-httpd-ea-php82 .php .php8 .phtml
 </IfModule>
 # php -- END cPanel-generated handler, do not edit
+
+# BEGIN Proxy API to Node backend
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # If the request matches an existing file or directory, serve it directly
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Proxy API routes (auth, feed, posts, post) to Node.js backend
+    RewriteRule ^(auth)(/.*)?$ http://127.0.0.1:3001%{REQUEST_URI} [P,L]
+</IfModule>
+# END Proxy API to Node backend
