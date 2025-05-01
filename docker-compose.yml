@@ -12,6 +12,8 @@ services:
       - backend # Ensures backend starts before frontend (optional, good practice)
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - cert-data:/etc/letsencrypt/live/p2.rasj.dk    
+      - cert-challenge:/var/www/cert-challenge        
 
 # Backend Service (Node.js Application)
   backend:
