@@ -113,7 +113,7 @@ function attachLoginListener() {
     }
 }
 
-async function signupUser(email, studentId, password) {
+async function signupUser(email, password) {
     try {
         const response = await fetch('/auth/signup', {
             method: 'POST',
@@ -121,7 +121,7 @@ async function signupUser(email, studentId, password) {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({ email, studentId, password })
+            body: JSON.stringify({ email, password })
         });
 
         const contentType = response.headers.get('content-type') || '';
@@ -151,22 +151,20 @@ async function signupUser(email, studentId, password) {
 function attachSignupListener() {
     const signupForm = document.getElementById('signupForm');
     const emailInput = document.getElementById('email');
-    const studentIdInput = document.getElementById('studentId');
     const passwordInput = document.getElementById('password');
     const signupBtn = document.getElementById('signupBtn');
     const messageArea = document.getElementById('messageArea');
 
-    if (signupForm && emailInput && studentIdInput && passwordInput && signupBtn && messageArea) {
+    if (signupForm && emailInput && passwordInput && signupBtn && messageArea) {
         signupForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             messageArea.textContent = '';
             messageArea.className = 'message';
 
             const email = emailInput.value;
-            const studentId = studentIdInput.value;
             const password = passwordInput.value;
 
-            if (!email || !studentId || !password) {
+            if (!email || !password) {
                 showMessage(messageArea, 'Please fill in all fields.', 'error');
                 return;
             }
@@ -174,7 +172,7 @@ function attachSignupListener() {
             signupBtn.disabled = true;
             signupBtn.textContent = 'Signing up...';
 
-            const result = await signupUser(email, studentId, password);
+            const result = await signupUser(email, password);
 
             if (result.success) {
                 showMessage(messageArea, result.message, 'success');
