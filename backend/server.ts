@@ -49,7 +49,7 @@ app.use(session({
 // --- API Routes ---
 // Mount the routers with path prefixes
 app.use('/api/auth/login', loginRouter); // Login routes will be under /login/login
-app.use('/api/auth/signup', signupRouter); // Signup routes will be under /signup/signup
+app.use('/auth/signup', signupRouter); // Signup routes will be under /signup/signup
 app.use('/api/feed', feedRouter);   // Feed routes will be under /api/feed
 app.use('/api/posts', postRouter);  // Mount the post router
 
