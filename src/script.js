@@ -124,7 +124,16 @@ async function signupUser(email, studentId, password) {
             body: JSON.stringify({ email, studentId, password })
         });
 
-        const result = await response.json();
+        const contentType = response.headers.get('content-type') || '';
+
+        let result;
+        if (contentType.includes('application/json')) {
+            result = await response.json();
+        } else {
+            const text = await response.text();
+            console.warn('Expected JSON but got:', text);
+            result = { error: 'Unexpected response from server.' };
+        }
 
         if (response.ok) {
             console.log('Signup successful:', result);
