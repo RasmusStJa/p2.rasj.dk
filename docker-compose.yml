@@ -67,4 +67,6 @@ services:
 
 # Define the named volume for database persistence
 volumes:
+  cert-data:
+  cert-challenge:
   db-data:
