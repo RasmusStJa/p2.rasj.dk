@@ -36,8 +36,9 @@ export async function signupUser({ email, password }: SignupParams): Promise<Sig
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Insert the new user
-    const insertUserQuery = 'INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)';
     const role = 'student';
+    const insertUserQuery = 'INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)';
+    
     const [result] = await dbPool.query<ResultSetHeader>(insertUserQuery, [
         username,
         email,
