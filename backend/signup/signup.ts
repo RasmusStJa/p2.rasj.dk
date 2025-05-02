@@ -19,13 +19,14 @@ const router: Router = express.Router();
 // POST / (mounted at /auth/signup in server.ts)
 router.post('/', (async (req: Request, res: Response) => {
     try {
-        // Expect studentId instead of username
         const { email, password } = req.body;
 
         // Validate required fields
         if (!email || !password) {
             return res.status(400).json({ error: 'Email and password are required' });
         }
+
+        const username = email.split('@')[0];
 
         // Get the actual pool connection to query
         const dbPool = await pool();
@@ -50,17 +51,16 @@ router.post('/', (async (req: Request, res: Response) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Insert the new user into the database
-        // Ensure your 'users' table has 'email', 'studentId', and 'password_hash' columns (matching schema.sql)
         // Also include the 'role', defaulting to 'student' for signup
-        const insertUserQuery = 'INSERT INTO users (email, password_hash, role) VALUES (?, ?, ?)';
+        const insertUserQuery = 'INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)';
         const role = 'student'; // Default role for signup
-        const [result]: [any, any] = await dbPool.query(insertUserQuery, [email, hashedPassword, role]);
+        const [result]: [any, any] = await dbPool.query(insertUserQuery, [username, email, hashedPassword, role]);
 
         // Optionally log the user in immediately after signup by setting the session
         // const userId = result.insertId;
         // req.session.userId = userId; // Make sure session middleware runs before this route in server.ts
 
-        console.log(`User created successfully: ID=${result.insertId}, Email=${email}`);
+        console.log(`User created successfully: ID=${result.insertId}, Email=${email}, Username=${username}`);
         // Ensure the correct column name user_id is used if your schema uses SERIAL PRIMARY KEY which might be named user_id
         // Assuming result.insertId gives the correct ID. Adjust if your DB driver returns it differently.
         res.status(201).json({ message: 'User created successfully', userId: result.insertId }); // 201 Created
