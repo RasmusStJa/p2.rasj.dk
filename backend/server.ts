@@ -5,7 +5,7 @@ import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import cors from 'cors'; // Uncomment if needed for cross-origin requests
-import { get_user_by_id } from './db.mjs';
+import { get_user_by_id } from './database/db.mjs';
 
 // Import routers
 import loginRouter from './login/login';
