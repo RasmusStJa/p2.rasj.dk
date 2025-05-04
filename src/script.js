@@ -19,6 +19,19 @@ function loadContent(section) {
 
     const filePath = `/public/${section}.html`;
 
+    // Section requires authentication
+    if (isProtectedSection(section) && !isAuthenticated()) {
+        console.warn('Attempted to access a protected section while not authenticated. Redirecting to login.');
+        window.location.href = '/#login';  
+        return;
+    }
+
+    if (isAuthenticated() && (section === 'login' || section === 'signup')) {
+        console.warn('Attempted to access login/signup while authenticated. Redirecting to home.');
+        window.location.href = '/#home';  
+        return;
+    }
+
     fetch(filePath)
         .then(response => {
             if (!response.ok) {
@@ -48,6 +61,15 @@ function loadContent(section) {
                 contentDiv.innerHTML = `<p>Failed to load content. Please try again later.</p>`;
             }
         });
+}
+
+function isAuthenticated() {
+    return Boolean(localStorage.getItem('authToken'));  
+}
+
+function isProtectedSection(section) {
+    const protectedSections = ['feed', 'profile'];
+    return protectedSections.includes(section);
 }
 
 function loadContentFromLogo() {
