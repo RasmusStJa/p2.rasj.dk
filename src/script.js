@@ -58,6 +58,45 @@ function loadContentFromLogo() {
     document.querySelector('.topnav a[href="#home"]')?.classList.add('active');
 }
 
+// Check login status
+async function checkLoginStatus() {
+    const response = await fetch('/api/auth/status', {
+        method: 'GET',
+        credentials: 'include', 
+    });
+
+    const data = await response.json();
+
+    if (data.loggedIn) {
+        // User is logged in
+        document.getElementById('login-message').textContent = `Logged in as User ${data.userId}`;
+        document.getElementById('login-button').style.display = 'none'; // Hide login button
+        document.getElementById('logout-button').style.display = 'block'; // Show logout button
+    } else {
+        // User is not logged in
+        document.getElementById('login-message').textContent = 'Not logged in';
+        document.getElementById('login-button').style.display = 'block'; // Show login button
+        document.getElementById('logout-button').style.display = 'none'; // Hide logout button
+    }
+}
+
+// Call this function on page load
+document.addEventListener('DOMContentLoaded', checkLoginStatus);
+
+// Function to logout
+async function logout() {
+    const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include', 
+    });
+
+    const data = await response.json();
+    if (data.message === 'Logged out successfully') {
+        checkLoginStatus();  // Refresh login status
+    }
+}
+
+
 async function loginUser(email, password) {
     try {
         const response = await fetch('api/auth/login', {
