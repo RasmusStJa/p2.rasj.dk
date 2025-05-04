@@ -5,7 +5,7 @@ import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import cors from 'cors'; // Uncomment if needed for cross-origin requests
-import { get_user_by_id } from './database/database.mjs';
+import { RowDataPacket } from 'mysql2';
 
 // Import routers
 import loginRouter from './login/login';
@@ -14,15 +14,16 @@ import feedRouter from './feed/feed';
 import postRouter from './post/post.routes'; // Import the new post router
 
 // Import and configure database connection
-import pool from './db'; // Import the pool (ensures db.ts runs and connects)
+import initializeDbPool from './db';
 
 const app = express();
 const port = parseInt(process.env.PORT || '3001', 10);
 app.set('trust proxy', 1);
 
-type UserRow = RowDataPacket & {
+interface UserRow extends RowDataPacket {
+  user_id: number;
   username: string;
-};
+}
 
 // Middleware Setup
 
@@ -48,21 +49,36 @@ app.use(session({
     // store: // Add a session store for production (e.g., connect-redis, connect-mongo)
 }));
 
-// --- route to check login status ---
+// ——— Status endpoint ———
 app.get('/api/auth/status', async (req, res) => {
-  if (req.session.userId) {
-    const user = await get_user_by_id(req.session.userId);
-    if (user) {
-      res.json({ loggedIn: true, userId: user.user_id, username: user.username });
-    } else {
-      res.status(404).json({ loggedIn: false, error: 'User not found' });
+  if (!req.session.userId) {
+    return res.json({ loggedIn: false });
+  }
+
+  try {
+    const dbPool = await initializeDbPool();
+    const [rows] = await dbPool.query<UserRow[]>(
+      'SELECT user_id, username FROM users WHERE user_id = ?',
+      [req.session.userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ loggedIn: false, error: 'User not found' });
     }
-  } else {
-    res.json({ loggedIn: false });
+
+    const user = rows[0];
+    res.json({
+      loggedIn: true,
+      userId:   user.user_id,
+      username: user.username,
+    });
+  } catch (err) {
+    console.error('Error fetching login status:', err);
+    res.status(500).json({ loggedIn: false, error: 'Internal server error' });
   }
 });
 
-// Logout destroy the session
+// ——— Logout ———
 app.post('/api/auth/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
