@@ -4,6 +4,9 @@ fetch('/src/navbar.html')
     document.getElementById('navbar').innerHTML = html;
 
     requestAnimationFrame(() => {
+      
+      checkLoginStatus(); 
+      
       const toggleBtn = document.getElementById('modeToggle');
       if (!toggleBtn) return console.warn('modeToggle not found');
 
@@ -44,8 +47,6 @@ fetch('/src/navbar.html')
         console.warn('Notification elements not found');
       }
     });
-
-    checkLoginStatus(); 
   });
 
 // Check login status
