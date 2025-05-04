@@ -42,9 +42,14 @@ app.use(session({
     // store: // Add a session store for production (e.g., connect-redis, connect-mongo)
 }));
 
-// --- Database Initialization ---
-// Initialize your DB connection here if needed, making 'db' available
-// Example: await db.connect();
+// --- route to check login status ---
+app.get('/api/auth/status', (req, res) => {
+    if (req.session.userId) {
+        res.json({ loggedIn: true, userId: req.session.userId });
+    } else {
+        res.json({ loggedIn: false });
+    }
+});
 
 // --- API Routes ---
 // Mount the routers with path prefixes
