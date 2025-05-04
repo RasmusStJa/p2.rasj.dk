@@ -1,4 +1,4 @@
-function loadContent(section) {
+async function loadContent(section) {
     const contentDiv = document.getElementById('content');
     const links = document.querySelectorAll('.topnav a');
 
@@ -20,13 +20,16 @@ function loadContent(section) {
     const filePath = `/public/${section}.html`;
 
     // Section requires authentication
-    if (isProtectedSection(section) && !isAuthenticated()) {
-        console.warn('Attempted to access a protected section while not authenticated. Redirecting to login.');
-        window.location.href = '/#login';  
-        return;
+    if (isProtectedSection(section)) {
+        const authenticated = await isAuthenticated();
+        if (!authenticated) {
+            console.warn('Attempted to access a protected section while not authenticated. Redirecting to login.');
+            window.location.href = '/#login';  
+            return;
+        }
     }
-
-    if (isAuthenticated() && (section === 'login' || section === 'signup')) {
+    
+    if (await isAuthenticated() && (section === 'login' || section === 'signup')) {
         console.warn('Attempted to access login/signup while authenticated. Redirecting to home.');
         window.location.href = '/#home';  
         return;
@@ -64,7 +67,17 @@ function loadContent(section) {
 }
 
 function isAuthenticated() {
-    return Boolean(localStorage.getItem('authToken'));  
+    return fetch('/api/auth/status', {
+        method: 'GET',
+        credentials: 'include', 
+    })
+    .then(response => {
+        if (!response.ok) {
+            return false; 
+        }
+        return response.json().then(data => data.loggedIn);
+    })
+    .catch(() => false); 
 }
 
 function isProtectedSection(section) {
