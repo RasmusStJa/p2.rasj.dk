@@ -72,19 +72,19 @@ async function checkLoginStatus() {
       loginMessage.style.display = 'inline';
       loginButton.style.display = 'none';
       logoutButton.style.display = 'inline';
-      navFeed.style.display = 'inline-block';
-      navProfile.style.display = 'inline-block';
-      navLogin.style.display = 'none';
-      navSignup.style.display = 'none';
+      navFeed.classList.remove('hidden');
+      navProfile.classList.remove('hidden');
+      navLogin.classList.add('hidden');
+      navSignup.classList.add('hidden');
   } else {
     // User is not logged in
       loginMessage.style.display = 'none';
       loginButton.style.display = 'inline-block';
       logoutButton.style.display = 'none';
-      navFeed.style.display = 'none';
-      navProfile.style.display = 'none';
-      navLogin.style.display = 'inline-block';
-      navSignup.style.display = 'inline-block';
+      navFeed.classList.add('hidden');
+      navProfile.classList.add('hidden');
+      navLogin.classList.remove('hidden');
+      navSignup.classList.remove('hidden');
   }
 }
 
