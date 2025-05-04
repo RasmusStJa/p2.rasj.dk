@@ -60,7 +60,7 @@ async function checkLoginStatus() {
 
   if (data.loggedIn) {
     // User is logged in
-    document.getElementById('login-message').textContent = `Logged in as User ${data.userId}`;
+    document.getElementById('login-message').textContent = `Logged in as ${data.username}`;
     document.getElementById('login-message').style.display = 'inline'; // Show login message
     document.getElementById('login-button').style.display = 'none'; // Hide login button
     document.getElementById('logout-button').style.display = 'inline'; // Show logout button
