@@ -47,11 +47,9 @@ app.use(session({
 app.get('/api/auth/status', async (req, res) => {
   if (req.session.userId) {
     try {
-      const result = await pool.query(
-        'SELECT username FROM users WHERE id = $1',
-        [req.session.userId]
-      );
-      const username = result.rows[0]?.username || null;
+      const dbPool = await pool();
+      const [rows] = await dbPool.query('SELECT username FROM users WHERE id = ?', [req.session.userId]);
+      const username = rows[0]?.username || null;
       if (!username) {
         return res.status(404).json({ loggedIn: false, error: 'User not found' });
       }
