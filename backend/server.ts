@@ -5,6 +5,7 @@ import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import cors from 'cors'; // Uncomment if needed for cross-origin requests
+import { RowDataPacket } from 'mysql2/promise';
 
 // Import routers
 import loginRouter from './login/login';
@@ -18,6 +19,10 @@ import pool from './db'; // Import the pool (ensures db.ts runs and connects)
 const app = express();
 const port = parseInt(process.env.PORT || '3001', 10);
 app.set('trust proxy', 1);
+
+type UserRow = RowDataPacket & {
+  username: string;
+};
 
 // Middleware Setup
 
@@ -44,9 +49,7 @@ app.use(session({
 }));
 
 // --- route to check login status ---
-app.get('/api/auth/status', async (req, res) => {
-  type UserRow = { username: string };
-    
+app.get('/api/auth/status', async (req, res) => {    
   if (req.session.userId) {
     try {
       const dbPool = await pool();
