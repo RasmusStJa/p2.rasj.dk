@@ -44,6 +44,7 @@ app.use(session({
 
 // --- route to check login status ---
 app.get('/api/auth/status', (req, res) => {
+    console.log("Checking status route");
     if (req.session.userId) {
         res.json({ loggedIn: true, userId: req.session.userId });
     } else {
