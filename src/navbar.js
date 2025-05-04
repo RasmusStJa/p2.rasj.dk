@@ -64,14 +64,12 @@ async function checkLoginStatus() {
     document.getElementById('login-message').style.display = 'inline'; // Show login message
     document.getElementById('login-button').style.display = 'none'; // Hide login button
     document.getElementById('logout-button').style.display = 'inline'; // Show logout button
-    document.getElementById('login-link').style.display = 'none'; // Hide login link in navbar
   } else {
     // User is not logged in
     document.getElementById('login-message').textContent = 'Not logged in';
     document.getElementById('login-message').style.display = 'none'; // Hide login message
     document.getElementById('login-button').style.display = 'inline'; // Show login button
     document.getElementById('logout-button').style.display = 'none'; // Hide logout button
-    document.getElementById('login-link').style.display = 'inline'; // Show login link in navbar
   }
 }
 
