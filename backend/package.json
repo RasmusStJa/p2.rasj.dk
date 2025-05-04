@@ -17,7 +17,7 @@
     "@types/node": "^20.14.12"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
     "start": "node server.js"
   }
 }
