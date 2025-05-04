@@ -58,18 +58,33 @@ async function checkLoginStatus() {
 
   const data = await response.json();
 
+  const loginMessage = document.getElementById('login-message');
+  const loginButton = document.getElementById('login-button');
+  const logoutButton = document.getElementById('logout-button');
+  const navLogin = document.getElementById('nav-login');
+  const navSignup = document.getElementById('nav-signup');
+  const navFeed = document.getElementById('nav-feed');
+  const navProfile = document.getElementById('nav-profile');
+
   if (data.loggedIn) {
     // User is logged in
-    document.getElementById('login-message').textContent = `Logged in as ${data.username}`;
-    document.getElementById('login-message').style.display = 'inline'; // Show login message
-    document.getElementById('login-button').style.display = 'none'; // Hide login button
-    document.getElementById('logout-button').style.display = 'inline'; // Show logout button
+      loginMessage.textContent = `Logged in as ${data.username}`;
+      loginMessage.style.display = 'inline';
+      loginButton.style.display = 'none';
+      logoutButton.style.display = 'inline';
+      navFeed.style.display = 'inline-block';
+      navProfile.style.display = 'inline-block';
+      navLogin.style.display = 'none';
+      navSignup.style.display = 'none';
   } else {
     // User is not logged in
-    document.getElementById('login-message').textContent = 'Not logged in';
-    document.getElementById('login-message').style.display = 'none'; // Hide login message
-    document.getElementById('login-button').style.display = 'inline'; // Show login button
-    document.getElementById('logout-button').style.display = 'none'; // Hide logout button
+      loginMessage.style.display = 'none';
+      loginButton.style.display = 'inline-block';
+      logoutButton.style.display = 'none';
+      navFeed.style.display = 'none';
+      navProfile.style.display = 'none';
+      navLogin.style.display = 'inline-block';
+      navSignup.style.display = 'inline-block';
   }
 }
 
