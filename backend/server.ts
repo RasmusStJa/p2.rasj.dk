@@ -51,6 +51,17 @@ app.get('/api/auth/status', (req, res) => {
     }
 });
 
+// Logout destroy the session
+app.post('/api/auth/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to logout' });
+        }
+        res.json({ message: 'Logged out successfully' });
+    });
+});
+
+
 // --- API Routes ---
 // Mount the routers with path prefixes
 app.use('/api/auth/login', loginRouter); // Login routes will be under /login/login
