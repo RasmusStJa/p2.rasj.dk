@@ -370,3 +370,13 @@ form button {
     gap: 12px;
     align-items: center;  
 }
+
+.nav-link {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.nav-link.hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
