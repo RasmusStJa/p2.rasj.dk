@@ -51,24 +51,10 @@ app.use(session({
 // --- route to check login status ---
 app.get('/api/auth/status', async (req, res) => {    
   if (req.session.userId) {
-    try {
-      const dbPool = await pool();
-      const [rows] = await dbPool.query<UserRow[]>('SELECT username FROM users WHERE id = ?', [req.session.userId]);
-      const username = rows[0]?.username || null;
-      if (!username) {
-        return res.status(404).json({ loggedIn: false, error: 'User not found' });
-      }
-
-      res.json({ loggedIn: true, userId: req.session.userId, username });
-    } catch (err) {
-      console.error('Error fetching user info:', err);
-      res.status(500).json({ loggedIn: false, error: 'Database error' });
-    }
+    res.json({ loggedIn: true, userId: req.session.userId });
   } else {
     res.json({ loggedIn: false });
-  }
-});
-
+  });
 
 // Logout destroy the session
 app.post('/api/auth/logout', (req, res) => {
