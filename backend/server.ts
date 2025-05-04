@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
@@ -11,8 +14,6 @@ import postRouter from './post/post.routes'; // Import the new post router
 
 // Import and configure database connection
 import pool from './db'; // Import the pool (ensures db.ts runs and connects)
-import dotenv from 'dotenv';
-dotenv.config();
 
 const app = express();
 const port = parseInt(process.env.PORT || '3001', 10);
