@@ -5,7 +5,7 @@ import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import cors from 'cors'; // Uncomment if needed for cross-origin requests
-import { RowDataPacket } from 'mysql2/promise';
+import { get_user_by_id } from './db.mjs';
 
 // Import routers
 import loginRouter from './login/login';
@@ -49,12 +49,18 @@ app.use(session({
 }));
 
 // --- route to check login status ---
-app.get('/api/auth/status', async (req, res) => {    
+app.get('/api/auth/status', async (req, res) => {
   if (req.session.userId) {
-    res.json({ loggedIn: true, userId: req.session.userId });
+    const user = await get_user_by_id(req.session.userId);
+    if (user) {
+      res.json({ loggedIn: true, userId: user.user_id, username: user.username });
+    } else {
+      res.status(404).json({ loggedIn: false, error: 'User not found' });
+    }
   } else {
     res.json({ loggedIn: false });
-  });
+  }
+});
 
 // Logout destroy the session
 app.post('/api/auth/logout', (req, res) => {
