@@ -60,8 +60,8 @@ body {
 }
 
 .nav-links {
-    display: flex;
-    gap: 12px;
+  display: flex;
+  align-items: center;
 }
 
 .nav-links a {
@@ -79,6 +79,24 @@ body {
     color: white;
   }
 
+.nav-links a.nav-link {
+  min-width: 80px;
+  text-align: center;
+}
+
+.nav-link {
+  display: inline-block;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.3s ease;
+}
+
+.nav-link.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
 
 .logo {
     background: var(--logo);
@@ -369,14 +387,4 @@ form button {
     display: flex;
     gap: 12px;
     align-items: center;  
-}
-
-.nav-link {
-  visibility: visible;
-  pointer-events: auto;
-}
-
-.nav-link.hidden {
-  visibility: hidden;
-  pointer-events: none;
 }
