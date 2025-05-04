@@ -57,7 +57,7 @@ app.get('/api/auth/status', async (req, res) => {
 
   try {
     const dbPool = await initializeDbPool();
-    const [rows] = await dbPool.query<{ user_id: number; username: string }[]>(
+    const [rows] = await dbPool.query<RowDataPacket[]>(
       'SELECT user_id, username FROM users WHERE user_id = ?',
       [req.session.userId]
     );
@@ -68,7 +68,7 @@ app.get('/api/auth/status', async (req, res) => {
       return res.status(404).json({ loggedIn: false, error: 'User not found' });
     }
 
-    const user = rows[0];
+    const user = rows[0] as UserRow;
     res.json({
       loggedIn: true,
       userId:   user.user_id,
