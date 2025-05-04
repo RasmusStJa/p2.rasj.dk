@@ -66,6 +66,7 @@ async function loginUser(email, password) {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify({ email: email, password: password })
         });
 
