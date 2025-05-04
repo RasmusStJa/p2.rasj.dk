@@ -3,11 +3,7 @@ fetch('/src/navbar.html')
   .then(html => {
     document.getElementById('navbar').innerHTML = html;
 
-    // checkLoginStatus to update the navbar with login state
-    checkLoginStatus();
-
     requestAnimationFrame(() => {
-      // Theme toggle logic (no changes needed here)
       const toggleBtn = document.getElementById('modeToggle');
       if (!toggleBtn) return console.warn('modeToggle not found');
 
@@ -30,7 +26,6 @@ fetch('/src/navbar.html')
         localStorage.setItem('theme', mode);
       }
 
-      // Notification toggle logic (no changes needed here)
       const bell = document.getElementById('notificationBell');
       const dropdown = document.getElementById('notificationDropdown');
       const wrapper = document.getElementById('notificationWrapper');
@@ -49,6 +44,8 @@ fetch('/src/navbar.html')
         console.warn('Notification elements not found');
       }
     });
+
+    checkLoginStatus(); 
   });
 
 // Check login status
