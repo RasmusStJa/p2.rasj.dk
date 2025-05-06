@@ -1,0 +1,37 @@
+# Node.js dependencies (for frontend, if installed locally)
+node_modules/
+
+# Build output directories (good practice)
+dist/
+build/
+out/
+
+# Docker files (don't include these in the image itself)
+Dockerfile
+backend/Dockerfile
+docker-compose.yml
+.dockerignore
+backend/.dockerignore
+
+# Git stuff
+.git/
+.gitignore
+
+# Environment variables
+.env*
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore the entire backend directory and its contents
+backend/
+
+# Other project-specific files/folders to ignore if any
+# e.g., temp/, cache/, coverage/, etc.

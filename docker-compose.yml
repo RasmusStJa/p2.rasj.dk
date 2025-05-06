@@ -1,0 +1,96 @@
+# Frontend Service (Served by Nginx)
+services:
+  frontend:
+    build:
+      context: . # Build context is the current directory (project root)
+      dockerfile: Dockerfile # Use the Dockerfile in the project root
+    ports:
+      - "8080:80" # Map port 8080 on your host machine to port 80 in the container (Nginx default)
+      - "443:443"
+    restart: unless-stopped # Restart the container unless it's manually stopped
+    depends_on:
+      - backend # Ensures backend starts before frontend (optional, good practice)
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - cert-data:/etc/letsencrypt/live/p2.rasj.dk    
+      - cert-challenge:/var/www/cert-challenge  
+
+certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - cert-data:/etc/letsencrypt/live/p2.rasj.dk
+      - cert-challenge:/var/www/cert-challenge
+    entrypoint: >
+      sh -c "
+        # Run once to obtain certs:
+        certbot certonly
+          --non-interactive
+          --agree-tos
+          --email your-email@example.com
+          --webroot
+          --webroot-path=/var/www/cert-challenge
+          -d p2.rasj.dk
+        && 
+        # After obtaining, just sleep to keep container alive:
+        tail -f /dev/null
+      "
+
+
+# Backend Service (Node.js Application)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001" # Map port 3001 on your host machine to port 3001 in the container (where your Node app listens)
+    environment:
+      # Environment variables passed to the backend container
+      # Your backend code (server.js) should use these to connect to the database
+      DB_HOST: db                     # The hostname for the database service (defined below)
+      DB_USER: ${MYSQL_USER}         # Read from the .env file
+      DB_PASSWORD: ${MYSQL_PASSWORD} # Read from the .env file
+      DB_NAME: ${MYSQL_DATABASE}     # Read from the .env file
+      NODE_ENV: development         # Example: set node environment
+      # Add any other environment variables your backend needs
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped # Restart the container unless it's manually stopped
+    # --- Development Enhancement (Optional) ---
+    # Uncomment the volumes section below if you want changes in your local './backend'
+    # code to be reflected live inside the container (requires nodemon or similar in backend).
+    # volumes:
+    #   - ./backend:/app             # Mount local backend code into the container's /app directory
+    #   - /app/node_modules        # Use container's node_modules, not local ones (prevents OS conflicts)
+
+# Database Service (MySQL)
+  db:
+    image: mysql:8.0 # Use the official MySQL image, version 8.0
+    restart: always # Always restart the database container if it stops
+    environment:
+      # Environment variables to configure the MySQL container
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # Set the root password (from .env)
+      MYSQL_DATABASE: ${MYSQL_DATABASE}           # Create a database with this name (from .env)
+      MYSQL_USER: ${MYSQL_USER}                   # Create a user with this name (from .env)
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}           # Set the password for the created user (from .env)
+    ports:
+      # Map port 3307 on your host to port 3306 (MySQL default) in the container
+      # This allows you to connect to the DB from your host machine using tools like DBeaver/TablePlus
+      # Use localhost:3307 for the host/port in your DB tool
+      - "3307:3306"
+    volumes:
+      # Persist database data even when the container stops/restarts
+      - db-data:/var/lib/mysql # Mount the named volume 'db-data' to MySQL's data directory
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+# Define the named volume for database persistence
+volumes:
+  cert-data:
+  cert-challenge:
+  db-data:
