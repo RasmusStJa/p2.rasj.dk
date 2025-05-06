@@ -21,14 +21,20 @@ export async function signupUser({ email, password }: SignupParams): Promise<Sig
     const username = email.split('@')[0];
     const dbPool = await pool();
 
-    // Check if user exists
-    const checkUserQuery = 'SELECT user_id, email FROM users WHERE email = ?';
-    const [existingUsers] = await dbPool.query<UserRow[]>(checkUserQuery, [email]);
+    // Check if email already exists
+    const checkEmailQuery = 'SELECT user_id FROM users WHERE email = ?';
+    const [emailRows] = await dbPool.query<UserRow[]>(checkEmailQuery, [email]);
 
-    if (existingUsers.length > 0) {
-        const existing = existingUsers[0];
-        let conflictField = existing.email === email ? 'email' : 'unknown';
-        throw new Error(`User with this ${conflictField} already exists`);
+    if (emailRows.length > 0) {
+        throw new Error('Email already exists');
+    }
+
+    // Check if username already exists
+    const checkUsernameQuery = 'SELECT user_id FROM users WHERE username = ?';
+    const [usernameRows] = await dbPool.query<UserRow[]>(checkUsernameQuery, [username]);
+
+    if (usernameRows.length > 0) {
+        throw new Error('Username already exists');
     }
 
     // Hash the password
