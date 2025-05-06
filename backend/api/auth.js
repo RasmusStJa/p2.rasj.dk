@@ -26,7 +26,7 @@ export async function signupUser({ email, password }: SignupParams): Promise<Sig
     const [emailRows] = await dbPool.query<UserRow[]>(checkEmailQuery, [email]);
 
     if (emailRows.length > 0) {
-        throw new Error('Email already exists');
+        throw new Error('Email already exists.');
     }
 
     // Check if username already exists
@@ -34,7 +34,7 @@ export async function signupUser({ email, password }: SignupParams): Promise<Sig
     const [usernameRows] = await dbPool.query<UserRow[]>(checkUsernameQuery, [username]);
 
     if (usernameRows.length > 0) {
-        throw new Error('Username already exists');
+        throw new Error('Username already exists.');
     }
 
     // Hash the password
