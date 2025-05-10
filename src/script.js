@@ -243,3 +243,93 @@ function showMessage(element, message, type) {
 window.onload = () => {
     loadContent('home');
 };
+
+// Function to follow a user
+async function followUser(userId) {
+    try {
+        const response = await fetch(`/api/follows/${userId}`, {
+            method: 'POST',
+            credentials: 'include', // Important for sending cookies/session
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || 'Failed to follow user');
+        }
+
+        // Update UI to show following status
+        updateFollowButton(userId, true);
+    } catch (error) {
+        console.error('Error following user:', error);
+        alert(error.message);
+    }
+}
+
+// Function to unfollow a user
+async function unfollowUser(userId) {
+    try {
+        const response = await fetch(`/api/follows/${userId}`, {
+            method: 'DELETE',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || 'Failed to unfollow user');
+        }
+
+        // Update UI to show not following status
+        updateFollowButton(userId, false);
+    } catch (error) {
+        console.error('Error unfollowing user:', error);
+        alert(error.message);
+    }
+}
+
+// Helper function to update the follow button UI
+function updateFollowButton(userId, isFollowing) {
+    const button = document.querySelector(`#follow-button-${userId}`);
+    if (button) {
+        button.textContent = isFollowing ? 'Unfollow' : 'Follow';
+        button.onclick = () => isFollowing ? unfollowUser(userId) : followUser(userId);
+        button.classList.toggle('following', isFollowing);
+    }
+}
+
+// Function to load followers/following lists
+async function loadFollowLists(userId) {
+    try {
+        // Load followers
+        const followersResponse = await fetch(`/api/follows/followers/${userId}`);
+        const followers = await followersResponse.json();
+        displayFollowList('followers-list', followers);
+
+        // Load following
+        const followingResponse = await fetch(`/api/follows/following/${userId}`);
+        const following = await followingResponse.json();
+        displayFollowList('following-list', following);
+    } catch (error) {
+        console.error('Error loading follow lists:', error);
+    }
+}
+
+// Helper function to display followers/following lists
+function displayFollowList(containerId, users) {
+    const container = document.getElementById(containerId);
+    if (container) {
+        container.innerHTML = users.map(user => `
+            <div class="user-item">
+                <span class="username">${user.username}</span>
+                <button onclick="followUser(${user.user_id})" id="follow-button-${user.user_id}">
+                    Follow
+                </button>
+            </div>
+        `).join('');
+    }
+}

@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
 import cors from 'cors'; // Uncomment if needed for cross-origin requests
@@ -12,6 +12,7 @@ import loginRouter from './login/login';
 import signupRouter from './signup/signup'; // Import the new signup router
 import feedRouter from './feed/feed';
 import postRouter from './post/post.routes'; // Import the new post router
+import followsRouter from './follows/follows';
 
 // Import and configure database connection
 import initializeDbPool from './db';
@@ -50,7 +51,7 @@ app.use(session({
 }));
 
 // ——— Status endpoint ———
-app.get('/api/auth/status', async (req, res) => {
+app.get('/api/auth/status', async (req: Request, res: Response) => {
   if (!req.session.userId) {
     return res.json({ loggedIn: false });
   }
@@ -81,7 +82,7 @@ app.get('/api/auth/status', async (req, res) => {
 });
 
 // ——— Logout ———
-app.post('/api/auth/logout', (req, res) => {
+app.post('/api/auth/logout', (req: Request, res: Response) => {
     req.session.destroy((err) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to logout' });
@@ -97,6 +98,7 @@ app.use('/api/auth/login', loginRouter); // Login routes will be under /login/lo
 app.use('/api/auth/signup', signupRouter); // Signup routes will be under /signup/signup
 app.use('/api/feed', feedRouter);   // Feed routes will be under /api/feed
 app.use('/api/posts', postRouter);  // Mount the post router
+app.use('/api/follows', followsRouter);
 
 // --- Static Files (Optional) ---
 // If you want Express to serve static files from 'public' (like your original feed.html, CSS, frontend JS)
@@ -109,7 +111,7 @@ app.use('/api/posts', postRouter);  // Mount the post router
 
 // --- Error Handling (Basic Example) ---
 // Add more specific error handling middleware as needed
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');
 });

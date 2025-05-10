@@ -19,6 +19,15 @@ CREATE TABLE friends (
     FOREIGN KEY (friend_id) REFERENCES users(user_id)
 );
 
+Create TABLE follows (
+    follower_id BIGINT UNSIGNED,
+    following_id BIGINT UNSIGNED,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (follower_id, following_id),
+    FOREIGN KEY (follower_id) REFERENCES users(user_id),
+    FOREIGN KEY (following_id) REFERENCES users(user_id)
+);
+
 
 CREATE TABLE messages (
     message_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

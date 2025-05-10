@@ -1,29 +1,13 @@
 import bcrypt from 'bcrypt';
 import pool from '../db';
-import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
-export interface SignupParams {
-    email: string;
-    password: string;
-}
-
-export interface SignupResult {
-    userId: number;
-    username: string;
-}
-
-interface UserRow extends RowDataPacket {
-    user_id: number;
-    email: string;
-}
-
-export async function signupUser({ email, password }: SignupParams): Promise<SignupResult> {
+export async function signupUser({ email, password }) {
     const username = email.split('@')[0];
     const dbPool = await pool();
 
     // Check if email already exists
     const checkEmailQuery = 'SELECT user_id FROM users WHERE email = ?';
-    const [emailRows] = await dbPool.query<UserRow[]>(checkEmailQuery, [email]);
+    const [emailRows] = await dbPool.query(checkEmailQuery, [email]);
 
     if (emailRows.length > 0) {
         throw new Error('Email already exists.');
@@ -31,7 +15,7 @@ export async function signupUser({ email, password }: SignupParams): Promise<Sig
 
     // Check if username already exists
     const checkUsernameQuery = 'SELECT user_id FROM users WHERE username = ?';
-    const [usernameRows] = await dbPool.query<UserRow[]>(checkUsernameQuery, [username]);
+    const [usernameRows] = await dbPool.query(checkUsernameQuery, [username]);
 
     if (usernameRows.length > 0) {
         throw new Error('Username already exists.');
@@ -45,7 +29,7 @@ export async function signupUser({ email, password }: SignupParams): Promise<Sig
     const role = 'student';
     const insertUserQuery = 'INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)';
     
-    const [result] = await dbPool.query<ResultSetHeader>(insertUserQuery, [
+    const [result] = await dbPool.query(insertUserQuery, [
         username,
         email,
         hashedPassword,
