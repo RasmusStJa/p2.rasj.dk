@@ -261,6 +261,110 @@ async function delete_message(message_id) {
   }
 }
 
+// ───── FOLLOW FUNCTIONS ─────
+
+async function get_followers(user_id) {
+  try {
+    const [rows] = await Aa_pool.query(
+      `SELECT u.user_id, u.username 
+       FROM follows f 
+       JOIN users u ON f.follower_id = u.user_id 
+       WHERE f.following_id = ?`,
+      [user_id]
+    );
+    return rows;
+  } catch (err) {
+    console.error('Error fetching followers:', err);
+    return -1;
+  }
+}
+
+async function get_following(user_id) {
+  try {
+    const [rows] = await Aa_pool.query(
+      `SELECT u.user_id, u.username 
+       FROM follows f 
+       JOIN users u ON f.following_id = u.user_id 
+       WHERE f.follower_id = ?`,
+      [user_id]
+    );
+    return rows;
+  } catch (err) {
+    console.error('Error fetching following:', err);
+    return -1;
+  }
+}
+
+async function create_follow(follower_id, following_id) {
+  try {
+    // Check if the user to follow exists
+    const [userRows] = await Aa_pool.query(
+      "SELECT user_id FROM users WHERE user_id = ?",
+      [following_id]
+    );
+
+    if (!userRows.length) {
+      console.error('User to follow not found:', following_id);
+      return -1;
+    }
+
+    // Check if already following
+    const [existingFollow] = await Aa_pool.query(
+      "SELECT * FROM follows WHERE follower_id = ? AND following_id = ?",
+      [follower_id, following_id]
+    );
+
+    if (existingFollow.length > 0) {
+      console.error('Already following this user:', following_id);
+      return -1;
+    }
+
+    // Create the follow relationship
+    await Aa_pool.query(
+      "INSERT INTO follows (follower_id, following_id) VALUES (?, ?)",
+      [follower_id, following_id]
+    );
+    console.log(`Follow relationship created from ${follower_id} to ${following_id}`);
+    return 1;
+  } catch (err) {
+    console.error('Error creating follow relationship:', err);
+    return -1;
+  }
+}
+
+async function delete_follow(follower_id, following_id) {
+  try {
+    const [result] = await Aa_pool.query(
+      "DELETE FROM follows WHERE follower_id = ? AND following_id = ?",
+      [follower_id, following_id]
+    );
+    
+    if (result.affectedRows === 0) {
+      console.error('Follow relationship not found:', { follower_id, following_id });
+      return -1;
+    }
+    
+    console.log(`Follow relationship deleted from ${follower_id} to ${following_id}`);
+    return 1;
+  } catch (err) {
+    console.error('Error deleting follow relationship:', err);
+    return -1;
+  }
+}
+
+async function check_follow_status(follower_id, following_id) {
+  try {
+    const [rows] = await Aa_pool.query(
+      "SELECT 1 FROM follows WHERE follower_id = ? AND following_id = ?",
+      [follower_id, following_id]
+    );
+    return rows.length > 0;
+  } catch (err) {
+    console.error('Error checking follow status:', err);
+    return -1;
+  }
+}
+
 // ───── EXPORTS ─────
 
 export {
@@ -281,5 +385,10 @@ export {
   get_messages_by_receiver_id,
   get_messages_by_sender_and_receiver_id,
   create_message,
-  delete_message
+  delete_message,
+  get_followers,
+  get_following,
+  create_follow,
+  delete_follow,
+  check_follow_status
 };

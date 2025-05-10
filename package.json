@@ -3,7 +3,7 @@
     "bcrypt": "^5.1.1",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
-    "mysql2": "^3.14.0",
+    "mysql2": "^3.14.1",
     "node.js": "^0.0.1-security"
   },
   "devDependencies": {
