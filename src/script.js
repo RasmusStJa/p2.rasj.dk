@@ -1,4 +1,4 @@
-function loadContent(section) {
+async function loadContent(section) {
     const contentDiv = document.getElementById('content');
     const links = document.querySelectorAll('.topnav a');
 
@@ -19,6 +19,22 @@ function loadContent(section) {
 
     const filePath = `/public/${section}.html`;
 
+    // Section requires authentication
+    if (isProtectedSection(section)) {
+        const authenticated = await isAuthenticated();
+        if (!authenticated) {
+            console.warn('Attempted to access a protected section while not authenticated. Redirecting to login.');
+            window.location.href = '/#login';  
+            return;
+        }
+    }
+    
+    if (await isAuthenticated() && (section === 'login' || section === 'signup')) {
+        console.warn('Attempted to access login/signup while authenticated. Redirecting to home.');
+        window.location.href = '/#home';  
+        return;
+    }
+
     fetch(filePath)
         .then(response => {
             if (!response.ok) {
@@ -31,13 +47,13 @@ function loadContent(section) {
             if (contentDiv) {
                 contentDiv.innerHTML = data;
                 // Attach listeners after a short delay to ensure elements are present
-                setTimeout(() => {
+                requestAnimationFrame(() => {
                     if (section === 'login') {
                         attachLoginListener();
                     } else if (section === 'signup') {
                         attachSignupListener();
                     }
-                }, 50);
+                });
             } else {
                 console.error('#content element became null before setting innerHTML!');
             }
@@ -50,6 +66,25 @@ function loadContent(section) {
         });
 }
 
+function isAuthenticated() {
+    return fetch('/api/auth/status', {
+        method: 'GET',
+        credentials: 'include', 
+    })
+    .then(response => {
+        if (!response.ok) {
+            return false; 
+        }
+        return response.json().then(data => data.loggedIn);
+    })
+    .catch(() => false); 
+}
+
+function isProtectedSection(section) {
+    const protectedSections = ['feed', 'profile'];
+    return protectedSections.includes(section);
+}
+
 function loadContentFromLogo() {
     loadContent('home');
 
@@ -60,12 +95,13 @@ function loadContentFromLogo() {
 
 async function loginUser(email, password) {
     try {
-        const response = await fetch('https://p2.rasj.dk:3001/auth/login', {
+        const response = await fetch('api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify({ email: email, password: password })
         });
 
@@ -113,18 +149,27 @@ function attachLoginListener() {
     }
 }
 
-async function signupUser(email, studentId, password) {
+async function signupUser(email, password) {
     try {
-        const response = await fetch('https://p2.rasj.dk:3001/auth/signup', {
+        const response = await fetch('/api/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify({ email, studentId, password })
+            body: JSON.stringify({ email, password })
         });
 
-        const result = await response.json();
+        const contentType = response.headers.get('content-type') || '';
+
+        let result;
+        if (contentType.includes('application/json')) {
+            result = await response.json();
+        } else {
+            const text = await response.text();
+            console.warn('Expected JSON but got:', text);
+            result = { error: 'Unexpected response from server.' };
+        }
 
         if (response.ok) {
             console.log('Signup successful:', result);
@@ -142,22 +187,20 @@ async function signupUser(email, studentId, password) {
 function attachSignupListener() {
     const signupForm = document.getElementById('signupForm');
     const emailInput = document.getElementById('email');
-    const studentIdInput = document.getElementById('studentId');
     const passwordInput = document.getElementById('password');
     const signupBtn = document.getElementById('signupBtn');
     const messageArea = document.getElementById('messageArea');
 
-    if (signupForm && emailInput && studentIdInput && passwordInput && signupBtn && messageArea) {
+    if (signupForm && emailInput && passwordInput && signupBtn && messageArea) {
         signupForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             messageArea.textContent = '';
             messageArea.className = 'message';
 
             const email = emailInput.value;
-            const studentId = studentIdInput.value;
             const password = passwordInput.value;
 
-            if (!email || !studentId || !password) {
+            if (!email || !password) {
                 showMessage(messageArea, 'Please fill in all fields.', 'error');
                 return;
             }
@@ -165,7 +208,7 @@ function attachSignupListener() {
             signupBtn.disabled = true;
             signupBtn.textContent = 'Signing up...';
 
-            const result = await signupUser(email, studentId, password);
+            const result = await signupUser(email, password);
 
             if (result.success) {
                 showMessage(messageArea, result.message, 'success');

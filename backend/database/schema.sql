@@ -10,20 +10,26 @@ CREATE TABLE users (
 );
 
 CREATE TABLE friends (
-    user_id INT REFERENCES users(user_id),
-    friend_id INT REFERENCES users(user_id),
-    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')), -- 'pending', 'accepted', 'rejected'
+    user_id BIGINT UNSIGNED,
+    friend_id BIGINT UNSIGNED,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, friend_id)
+    PRIMARY KEY (user_id, friend_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (friend_id) REFERENCES users(user_id)
 );
 
+
 CREATE TABLE messages (
-    message_id SERIAL PRIMARY KEY,
-    sender_id INT REFERENCES users(user_id),
-    receiver_id INT REFERENCES users(user_id),
+    message_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    sender_id BIGINT UNSIGNED,
+    receiver_id BIGINT UNSIGNED,
     content TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES users(user_id),
+    FOREIGN KEY (receiver_id) REFERENCES users(user_id)
 );
+
 
 /*
 INSERT INTO users (username, email, password_hash, role)

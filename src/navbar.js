@@ -4,7 +4,9 @@ fetch('/src/navbar.html')
     document.getElementById('navbar').innerHTML = html;
 
     requestAnimationFrame(() => {
-      // Theme toggle logic
+      
+      checkLoginStatus(); 
+      
       const toggleBtn = document.getElementById('modeToggle');
       if (!toggleBtn) return console.warn('modeToggle not found');
 
@@ -27,7 +29,6 @@ fetch('/src/navbar.html')
         localStorage.setItem('theme', mode);
       }
 
-      // Notification toggle logic
       const bell = document.getElementById('notificationBell');
       const dropdown = document.getElementById('notificationDropdown');
       const wrapper = document.getElementById('notificationWrapper');
@@ -47,3 +48,55 @@ fetch('/src/navbar.html')
       }
     });
   });
+
+// Check login status
+async function checkLoginStatus() {
+  const response = await fetch('/api/auth/status', {
+    method: 'GET',
+    credentials: 'include', 
+  });
+
+  const data = await response.json();
+
+  const loginMessage = document.getElementById('login-message');
+  const loginButton = document.getElementById('login-button');
+  const logoutButton = document.getElementById('logout-button');
+  const navLogin = document.getElementById('nav-login');
+  const navSignup = document.getElementById('nav-signup');
+  const navFeed = document.getElementById('nav-feed');
+  const navProfile = document.getElementById('nav-profile');
+
+  if (data.loggedIn) {
+    // User is logged in
+      loginMessage.textContent = `Logged in as ${data.username}`;
+      loginMessage.style.display = 'inline';
+      loginButton.style.display = 'none';
+      logoutButton.style.display = 'inline';
+      navFeed.classList.remove('hidden');
+      navProfile.classList.remove('hidden');
+      navLogin.classList.add('hidden');
+      navSignup.classList.add('hidden');
+  } else {
+    // User is not logged in
+      loginMessage.style.display = 'none';
+      loginButton.style.display = 'inline-block';
+      logoutButton.style.display = 'none';
+      navFeed.classList.add('hidden');
+      navProfile.classList.add('hidden');
+      navLogin.classList.remove('hidden');
+      navSignup.classList.remove('hidden');
+  }
+}
+
+// Function to logout
+async function logout() {
+  const response = await fetch('/api/auth/logout', {
+    method: 'POST',
+    credentials: 'include', 
+  });
+
+  const data = await response.json();
+  if (data.message === 'Logged out successfully') {
+    checkLoginStatus();  // Refresh login status
+  }
+}
