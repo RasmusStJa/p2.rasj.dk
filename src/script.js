@@ -47,14 +47,6 @@ async function loadContent(section) {
             if (contentDiv) {
                 contentDiv.innerHTML = data;
 
-                if (section === 'feed') {
-                    const script = document.createElement('script');
-                    script.src = '/src/feed.js';
-                    script.defer = true;
-                    document.body.appendChild(script);
-                }
-
-                
                 // Attach listeners after a short delay to ensure elements are present
                 requestAnimationFrame(() => {
                     if (section === 'login') {
