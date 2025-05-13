@@ -91,6 +91,10 @@ app.post('/api/auth/logout', (req: Request, res: Response) => {
     });
 });
 
+// --- Serve Static Files ---
+import path from 'path';
+app.use(express.static(path.join(__dirname, '../public')));
+app.use('/src', express.static(path.join(__dirname, '../src')));
 
 // --- API Routes ---
 // Mount the routers with path prefixes
@@ -99,14 +103,6 @@ app.use('/api/auth/signup', signupRouter); // Signup routes will be under /signu
 app.use('/api/feed', feedRouter);   // Feed routes will be under /api/feed
 app.use('/api/posts', postRouter);  // Mount the post router
 app.use('/api/follows', followsRouter);
-
-// --- Static Files (Optional) ---
-// If you want Express to serve static files from 'public' (like your original feed.html, CSS, frontend JS)
-// import path from 'path';
-// app.use(express.static(path.join(__dirname, '../../public')));
-// app.get('*', (req, res) => { // Handle SPA routing if needed - redirect non-API calls to index.html
-//    res.sendFile(path.join(__dirname, '../../public/index.html'));
-// });
 
 
 // --- Error Handling (Basic Example) ---
