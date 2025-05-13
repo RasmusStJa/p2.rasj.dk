@@ -91,11 +91,6 @@ app.post('/api/auth/logout', (req: Request, res: Response) => {
     });
 });
 
-// --- Serve Static Files ---
-import path from 'path';
-app.use(express.static(path.join(__dirname, '../public')));
-app.use('/src', express.static(path.join(__dirname, '../src')));
-
 // --- API Routes ---
 // Mount the routers with path prefixes
 app.use('/api/auth/login', loginRouter); // Login routes will be under /login/login
