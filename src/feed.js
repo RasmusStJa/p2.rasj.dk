@@ -44,6 +44,8 @@ async function createPost() {
         return;
     }
 
+    console.log('[DEBUG] Creating post with content:', content);
+
     try {
         const response = await fetch('/api/posts', {
             method: 'POST',
@@ -52,8 +54,15 @@ async function createPost() {
             body: JSON.stringify({ content })
         });
 
-        if (!response.ok) throw new Error('Failed to create post');
+         console.log('[DEBUG] /api/posts response status:', response.status);
 
+        if (!response.ok) {
+            const errData = await response.json();
+            console.error('[ERROR] Post creation failed:', errData);
+            throw new Error('Failed to create post');
+        }
+        
+        console.log('[DEBUG] Post created successfully');
         document.getElementById('postContent').value = '';
         fetchFeed(); // Refresh the feed
     } catch (error) {
