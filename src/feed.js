@@ -2,6 +2,8 @@ async function fetchFeed() {
     const container = document.getElementById('postsContainer');
     container.innerHTML = 'Loading posts...';
 
+    console.log('[DEBUG] Starting fetchFeed');
+
     try {
         const response = await fetch('/api/feed', {
             method: 'GET',
@@ -9,9 +11,13 @@ async function fetchFeed() {
             headers: { 'Content-Type': 'application/json' }
         });
 
+        console.log('[DEBUG] /api/feed response status:', response.status);
+
         if (!response.ok) throw new Error('Failed to fetch posts');
 
         const posts = await response.json();
+
+        console.log('[DEBUG] Posts received:', posts);
 
         if (posts.length === 0) {
             container.innerHTML = '<p>No posts yet.</p>';
