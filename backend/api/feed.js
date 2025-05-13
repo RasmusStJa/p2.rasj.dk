@@ -9,24 +9,68 @@ async function fetchFeed() {
 
         if (response.ok) {
             const feedPosts = await response.json();
-            console.log('Feed loaded:', feedPosts);
-            // Now you can use feedPosts to display the feed in your UI
-            // Example: renderFeed(feedPosts);
+            renderFeed(feedPosts);
         } else if (response.status === 401) {
             console.log('Not logged in. Redirecting to login...');
-            // Redirect to login page
-            // window.location.href = '/login.html';
+            window.location.href = '/login.html';
         } else {
-            // Handle other errors (e.g., 500)
-            const errorData = await response.json(); // Try to get error message from body
-            console.error(`Error fetching feed: ${response.status} - ${errorData?.message || response.statusText}`);
-            // Display an error message to the user
+            const errorData = await response.json();
+            console.error(`Error fetching feed: ${errorData?.message || response.statusText}`);
         }
     } catch (error) {
         console.error('Network error or problem fetching feed:', error);
-        // Display a network error message to the user
     }
 }
 
-// Example usage: Call this function when the feed page loads
-// fetchFeed();
+function renderFeed(posts) {
+    const postsContainer = document.getElementById('postsContainer');
+    postsContainer.innerHTML = ''; // Clear the container before appending new posts
+
+    posts.forEach(post => {
+        const postElement = document.createElement('div');
+        postElement.classList.add('post');
+
+        postElement.innerHTML = `
+            <div><strong>${post.username}</strong> <small>${new Date(post.created_at).toLocaleString()}</small></div>
+            <p>${post.content}</p>
+        `;
+
+        postsContainer.appendChild(postElement); // Add the post to the container
+    });
+}
+
+
+// Function to create a new post
+async function createPost() {
+    const content = document.getElementById('postContent').value;
+
+    if (!content.trim()) {
+        alert('Post content cannot be empty');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ content })
+        });
+
+        if (response.ok) {
+            const post = await response.json();
+            console.log('New post created:', post);
+            fetchFeed(); // Refresh the feed after creating a post
+            document.getElementById('postContent').value = ''; // Clear input after posting
+        } else {
+            const errorData = await response.json();
+            console.error('Error creating post:', errorData.message);
+        }
+    } catch (error) {
+        console.error('Network error while creating post:', error);
+    }
+}
+
+// Call fetchFeed when the page loads to display the existing posts
+document.addEventListener('DOMContentLoaded', fetchFeed);
