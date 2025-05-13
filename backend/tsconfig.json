@@ -112,8 +112,8 @@
     "rootDir": "./"
   },
   "include": [
-    "backend/**/*.ts",
-    "backend/**/*.js"
+    "**/*.ts",
+    "**/*.js"
   ],
   "exclude": ["node_modules"]
 }
