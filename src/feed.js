@@ -21,7 +21,7 @@ async function fetchFeed() {
         container.innerHTML = posts.map(post => `
             <div class="post">
                 <p>${post.content}</p>
-                <small>By user ${post.user_id}</small>
+                <small>By ${post.username}</small>
             </div>
         `).join('');
     } catch (error) {
