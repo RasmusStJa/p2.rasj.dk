@@ -13,7 +13,7 @@ export const createPost = async (req: Request, res: Response) => {
         return res.status(400).json({ message: 'Post content cannot be empty' });
     }
 
-    t try {
+    try {
         const pool = await getDbPool();
         const [result] = await pool.query<OkPacket>(
             'INSERT INTO posts (user_id, content) VALUES (?, ?)',
