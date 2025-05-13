@@ -3,7 +3,7 @@ async function fetchFeed() {
     container.innerHTML = 'Loading posts...';
 
     try {
-        const response = await fetch('/api/posts', {
+        const response = await fetch('/api/feed', {
             method: 'GET',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' }
