@@ -14,6 +14,8 @@ const router: Router = express.Router();
 router.get('/', async (req: Request, res: Response) => {
     const userId = req.session?.userId ?? null;
 
+    console.log('[DEBUG] /api/feed called by userId:', userId);
+
     if (!userId) {
         return res.status(401).json({ message: 'Unauthorized. Please log in.' });
     }
@@ -29,6 +31,9 @@ router.get('/', async (req: Request, res: Response) => {
         `;
 
         const [rows] = await pool.query<FeedPost[]>(query);
+        
+        console.log('[DEBUG] Feed rows returned:', rows);
+        
         res.json(rows);
 
     } catch (error) {
