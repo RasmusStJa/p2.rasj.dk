@@ -72,5 +72,7 @@ async function createPost() {
     }
 }
 
+window.createPost = createPost;
+
 // Call fetchFeed when the page loads to display the existing posts
 document.addEventListener('DOMContentLoaded', fetchFeed);
