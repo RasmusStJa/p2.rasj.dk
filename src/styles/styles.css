@@ -390,6 +390,16 @@ form button {
 }
 
 
+/* Feed */
+.feed-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 100px);
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+}
+
 .feed-title {
     font-size: 2rem;
     margin-bottom: 1rem;
@@ -409,6 +419,15 @@ form button {
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.sticky-post-form {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg-color);
+    padding: 16px 10px 10px;
+    border-top: 1px solid #ccc;
+    z-index: 50;
 }
 
 .post-form textarea {
@@ -448,12 +467,9 @@ form button {
 }
 
 .posts-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 10px 20px;
 }
 
 .post-card {
