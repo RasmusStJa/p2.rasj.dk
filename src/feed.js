@@ -87,29 +87,25 @@ function renderPosts(posts) {
         return;
     }
 
-    container.innerHTML = posts.map(post => {
-        const reactions = post.reactions || { like: 0, laugh: 0, heart: 0 };
-
-        return `
-            <div class="post-card" data-id="${post.post_id}">
-                <div class="post-header">
-                    <span class="post-user">${post.username}</span>
-                    <span class="post-time">${formatTime(post.created_at)}</span>
-                </div>
-                <p class="post-content">${post.content}</p>
-                <div class="post-actions">
-                    <span class="reaction-btn" data-type="like">👍 <span class="count">${reactions.like}</span></span>
-                    <span class="reaction-btn" data-type="laugh">😂 <span class="count">${reactions.laugh}</span></span>
-                    <span class="reaction-btn" data-type="heart">❤️ <span class="count">${reactions.heart}</span></span>
-                    <button class="comment-btn">💬 Comment</button>
-                    <div class="comment-box hidden">
-                        <input type="text" placeholder="Write a comment..." class="comment-input"/>
-                        <button class="submit-comment">Post</button>
-                    </div>
+    container.innerHTML = posts.map(post => `
+        <div class="post-card" data-id="${post.post_id}">
+            <div class="post-header">
+                <span class="post-user">${post.username}</span>
+                <span class="post-time">${formatTime(post.created_at)}</span>
+            </div>
+            <p class="post-content">${post.content}</p>
+            <div class="post-actions">
+                <button class="reaction-btn" data-reaction="like">👍 Like (<span class="reaction-count">${post.reactions.like}</span>)</button>
+                <button class="reaction-btn" data-reaction="laugh">😂 Laugh (<span class="reaction-count">${post.reactions.laugh}</span>)</button>
+                <button class="reaction-btn" data-reaction="heart">❤️ Heart (<span class="reaction-count">${post.reactions.heart}</span>)</button>
+                <button class="comment-btn">💬 Comment</button>
+                <div class="comment-box hidden">
+                    <input type="text" placeholder="Write a comment..." class="comment-input"/>
+                    <button class="submit-comment">Post</button>
                 </div>
             </div>
-        `;
-    }).join('');
+        </div>
+    `).join('');
 
 
 // REACTION HANDLERS
@@ -117,26 +113,20 @@ function renderPosts(posts) {
         btn.addEventListener('click', async () => {
             const postCard = btn.closest('.post-card');
             const postId = postCard.dataset.id;
-            const reactionType = btn.dataset.type;
+            const reactionType = btn.dataset.reaction;
 
             try {
-                const res = await fetch(`/api/posts/${postId}/react`, {
+                const res = await fetch(`/api/posts/${postId}/reaction`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
-                    body: JSON.stringify({ reactionType })
+                    body: JSON.stringify({ reaction_type: reactionType })
                 });
 
                 if (res.ok) {
                     const data = await res.json();
-                    const updatedReactions = data.reactions;
-
-                    // Update each count
-                    postCard.querySelector('[data-type="like"] .count').textContent = updatedReactions.like;
-                    postCard.querySelector('[data-type="laugh"] .count').textContent = updatedReactions.laugh;
-                    postCard.querySelector('[data-type="heart"] .count').textContent = updatedReactions.heart;
+                    // Update the reaction count in the UI
+                    postCard.querySelector(`.reaction-count`).textContent = data.reactions[reactionType];
                 }
             } catch (err) {
                 console.error('Failed to react to post:', err);
