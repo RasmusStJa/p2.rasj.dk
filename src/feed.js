@@ -87,46 +87,64 @@ function renderPosts(posts) {
         return;
     }
 
-    container.innerHTML = posts.map(post => `
-        <div class="post-card" data-id="${post.post_id}">
-            <div class="post-header">
-                <span class="post-user">${post.username}</span>
-                <span class="post-time">${formatTime(post.created_at)}</span>
-            </div>
-            <p class="post-content">${post.content}</p>
-            <div class="post-actions">
-                <button class="like-btn">❤️ Like (<span class="like-count">${post.likes || 0}</span>)</button>
-                <button class="comment-btn">💬 Comment</button>
-                <div class="comment-box hidden">
-                    <input type="text" placeholder="Write a comment..." class="comment-input"/>
-                    <button class="submit-comment">Post</button>
+    container.innerHTML = posts.map(post => {
+        const reactions = post.reactions || { like: 0, laugh: 0, heart: 0 };
+
+        return `
+            <div class="post-card" data-id="${post.post_id}">
+                <div class="post-header">
+                    <span class="post-user">${post.username}</span>
+                    <span class="post-time">${formatTime(post.created_at)}</span>
+                </div>
+                <p class="post-content">${post.content}</p>
+                <div class="post-actions">
+                    <span class="reaction-btn" data-type="like">👍 <span class="count">${reactions.like}</span></span>
+                    <span class="reaction-btn" data-type="laugh">😂 <span class="count">${reactions.laugh}</span></span>
+                    <span class="reaction-btn" data-type="heart">❤️ <span class="count">${reactions.heart}</span></span>
+                    <button class="comment-btn">💬 Comment</button>
+                    <div class="comment-box hidden">
+                        <input type="text" placeholder="Write a comment..." class="comment-input"/>
+                        <button class="submit-comment">Post</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
 
-container.querySelectorAll('.like-btn').forEach(btn => {
+// REACTION HANDLERS
+    container.querySelectorAll('.reaction-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const postCard = btn.closest('.post-card');
             const postId = postCard.dataset.id;
+            const reactionType = btn.dataset.type;
 
             try {
-                const res = await fetch(`/api/posts/${postId}/like`, {
+                const res = await fetch(`/api/posts/${postId}/react`, {
                     method: 'POST',
-                    credentials: 'include'
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ reactionType })
                 });
 
                 if (res.ok) {
                     const data = await res.json();
-                    postCard.querySelector('.like-count').textContent = data.likes;
+                    const updatedReactions = data.reactions;
+
+                    // Update each count
+                    postCard.querySelector('[data-type="like"] .count').textContent = updatedReactions.like;
+                    postCard.querySelector('[data-type="laugh"] .count').textContent = updatedReactions.laugh;
+                    postCard.querySelector('[data-type="heart"] .count').textContent = updatedReactions.heart;
                 }
             } catch (err) {
-                console.error('Failed to like post:', err);
+                console.error('Failed to react to post:', err);
             }
         });
     });
 
+    // COMMENT HANDLERS
     container.querySelectorAll('.comment-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const box = btn.nextElementSibling;
