@@ -88,25 +88,27 @@ function renderPosts(posts) {
     }
 
     container.innerHTML = posts.map(post => `
-        <div class="post-card" data-id="${post.post_id}">
-            <div class="post-header">
-                <span class="post-user">${post.username}</span>
-                <span class="post-time">${formatTime(post.created_at)}</span>
-            </div>
-            <p class="post-content">${post.content}</p>
-            <div class="post-actions">
-                <button class="reaction-btn" data-reaction="like">👍 Like (<span class="reaction-count">${post.reactions.like}</span>)</button>
-                <button class="reaction-btn" data-reaction="laugh">😂 Laugh (<span class="reaction-count">${post.reactions.laugh}</span>)</button>
-                <button class="reaction-btn" data-reaction="heart">❤️ Heart (<span class="reaction-count">${post.reactions.heart}</span>)</button>
-                <button class="comment-btn">💬 Comment</button>
-                <div class="comment-box hidden">
-                    <input type="text" placeholder="Write a comment..." class="comment-input"/>
-                    <button class="submit-comment">Post</button>
+        post.reactions = post.reactions || { like: 0, laugh: 0, heart: 0 };
+        return `
+            <div class="post-card" data-id="${post.post_id}">
+                <div class="post-header">
+                    <span class="post-user">${post.username}</span>
+                    <span class="post-time">${formatTime(post.created_at)}</span>
+                </div>
+                <p class="post-content">${post.content}</p>
+                <div class="post-actions">
+                    <button class="reaction-btn" data-reaction="like">👍 Like (<span class="reaction-count">${post.reactions.like}</span>)</button>
+                    <button class="reaction-btn" data-reaction="laugh">😂 Laugh (<span class="reaction-count">${post.reactions.laugh}</span>)</button>
+                    <button class="reaction-btn" data-reaction="heart">❤️ Heart (<span class="reaction-count">${post.reactions.heart}</span>)</button>
+                    <button class="comment-btn">💬 Comment</button>
+                    <div class="comment-box hidden">
+                        <input type="text" placeholder="Write a comment..." class="comment-input"/>
+                        <button class="submit-comment">Post</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
-
+        `;
+}).join('');
 
 // REACTION HANDLERS
     container.querySelectorAll('.reaction-btn').forEach(btn => {
