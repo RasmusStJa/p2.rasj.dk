@@ -87,8 +87,9 @@ function renderPosts(posts) {
         return;
     }
 
-    container.innerHTML = posts.map(post => `
+    container.innerHTML = posts.map(post => {
         post.reactions = post.reactions || { like: 0, laugh: 0, heart: 0 };
+
         return `
             <div class="post-card" data-id="${post.post_id}">
                 <div class="post-header">
@@ -108,7 +109,7 @@ function renderPosts(posts) {
                 </div>
             </div>
         `;
-}).join('');
+    }).join('');
 
 // REACTION HANDLERS
     container.querySelectorAll('.reaction-btn').forEach(btn => {
