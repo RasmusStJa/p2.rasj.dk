@@ -88,7 +88,7 @@ function renderPosts(posts) {
     }
 
     container.innerHTML = posts.map(post => `
-        <div class="post-card" data-id="${post.id}">
+        <div class="post-card" data-id="${post.post_id}">
             <div class="post-header">
                 <span class="post-user">${post.username}</span>
                 <span class="post-time">${formatTime(post.created_at)}</span>
