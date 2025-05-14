@@ -501,3 +501,25 @@ form button {
     resize: vertical;
     box-sizing: border-box;
 }
+
+.reaction-btn {
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-right: 10px;
+    user-select: none;
+    transition: transform 0.1s;
+}
+
+.reaction-btn:hover {
+    transform: scale(1.2);
+}
+
+.reaction-btn.selected {
+    opacity: 1;
+    font-weight: bold;
+}
+
+.reaction-btn .count {
+    font-size: 0.9rem;
+    margin-left: 4px;
+}
