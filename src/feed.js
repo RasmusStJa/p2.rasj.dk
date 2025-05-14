@@ -1,77 +1,74 @@
-async function fetchFeed() {
-    const container = document.getElementById('postsContainer');
-    container.innerHTML = 'Loading posts...';
-
-    console.log('[DEBUG] Starting fetchFeed');
-
+// Fetch and display the feed
+async function loadFeed() {
     try {
         const response = await fetch('/api/feed', {
             method: 'GET',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' }
+            credentials: 'include'
         });
 
-        console.log('[DEBUG] /api/feed response status:', response.status);
-
-        if (!response.ok) throw new Error('Failed to fetch posts');
-
-        const posts = await response.json();
-
-        console.log('[DEBUG] Posts received:', posts);
-
-        if (posts.length === 0) {
-            container.innerHTML = '<p>No posts yet.</p>';
-            return;
+        if (!response.ok) {
+            throw new Error('Failed to load feed');
         }
 
-        container.innerHTML = posts.map(post => `
-            <div class="post">
-                <p>${post.content}</p>
-                <small>By ${post.username}</small>
-            </div>
-        `).join('');
+        const posts = await response.json();
+        renderPosts(posts);
     } catch (error) {
         console.error('Error loading feed:', error);
-        container.innerHTML = '<p>Error loading posts.</p>';
+        const container = document.getElementById('postsContainer');
+        if (container) container.innerHTML = '<p>Failed to load feed.</p>';
     }
 }
 
-// Handle new post creation
+// Post creation logic
 async function createPost() {
-    const content = document.getElementById('postContent').value.trim();
+    const textarea = document.getElementById('postContent');
+    const content = textarea?.value.trim();
+
     if (!content) {
-        alert('Please write something first.');
+        alert('Post content cannot be empty.');
         return;
     }
-
-    console.log('[DEBUG] Creating post with content:', content);
 
     try {
         const response = await fetch('/api/posts', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ content })
         });
 
-         console.log('[DEBUG] /api/posts response status:', response.status);
+        const result = await response.json();
 
-        if (!response.ok) {
-            const errData = await response.json();
-            console.error('[ERROR] Post creation failed:', errData);
-            throw new Error('Failed to create post');
+        if (response.ok) {
+            textarea.value = ''; // Clear textarea
+            loadFeed();          // Refresh the feed
+        } else {
+            console.error('Post creation failed:', result.error);
+            alert(result.error || 'Failed to create post.');
         }
-        
-        console.log('[DEBUG] Post created successfully');
-        document.getElementById('postContent').value = '';
-        fetchFeed(); // Refresh the feed
-    } catch (error) {
-        console.error('Error creating post:', error);
-        alert('Failed to post. Are you logged in?');
+    } catch (err) {
+        console.error('Error creating post:', err);
+        alert('Network error while creating post.');
     }
 }
 
-window.createPost = createPost;
+// Render posts to DOM
+function renderPosts(posts) {
+    const container = document.getElementById('postsContainer');
 
-// Load feed on load
-fetchFeed();
+    if (!container) return;
+
+    if (!posts || posts.length === 0) {
+        container.innerHTML = '<p>No posts to show.</p>';
+        return;
+    }
+
+    container.innerHTML = posts.map(post => `
+        <div class="post">
+            <p><strong>${post.username}</strong> <small>${new Date(post.created_at).toLocaleString()}</small></p>
+            <p>${post.content}</p>
+        </div>
+    `).join('');
+}
