@@ -32,16 +32,18 @@ router.get('/', async (req: Request, res: Response) => {
 
         const [rows] = await pool.query<FeedPost[]>(query);
         
-        console.log('[DEBUG] Rows before mapping:', rows);
-        
-        res.json(
-          rows.map((post: FeedPost) => ({
-            id: post.post_id, 
-            content: post.content,
-            created_at: post.created_at,
-            username: post.username
-          }))
-        );
+        res.json({
+            debug: {
+                query,
+                rows
+            },
+            posts: rows.map((post: FeedPost) => ({
+                id: post.post_id, 
+                content: post.content,
+                created_at: post.created_at,
+                username: post.username
+            }))
+        });
 
     } catch (error) {
         console.error('Error fetching feed:', error);
