@@ -85,7 +85,7 @@ export const reactToPost = async (req: Request, res: Response) => {
         };
 
         counts.forEach(row => {
-            reactionSummary[row.reaction_type] = row.count;
+            reactionSummary[row.reaction_type as 'like' | 'laugh' | 'heart'] = row.count
         });
 
         res.json({ message: 'Reaction updated', reactions: reactionSummary });
