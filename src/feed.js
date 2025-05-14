@@ -66,7 +66,7 @@ function renderPosts(posts) {
     }
 
     container.innerHTML = posts.map(post => `
-        <div class="post">
+        <div class="post-card">
             <p><strong>${post.username}</strong> <small>${new Date(post.created_at).toLocaleString()}</small></p>
             <p>${post.content}</p>
         </div>
