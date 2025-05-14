@@ -17,6 +17,6 @@
     RewriteRule ^ - [L]
 
     # Proxy API routes (auth, feed, posts, post) to Node.js backend
-    RewriteRule ^(auth)(/.*)?$ http://127.0.0.1:3001%{REQUEST_URI} [P,L]
+    RewriteRule ^api/(.*)$ http://127.0.0.1:3001/api/$1 [P,L]
 </IfModule>
 # END Proxy API to Node backend
