@@ -123,7 +123,7 @@ function renderPosts(posts) {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
-                    body: JSON.stringify({ reaction_type: reactionType })
+                    body: JSON.stringify({ reactionType })
                 });
 
                 if (res.ok) {
