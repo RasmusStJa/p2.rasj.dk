@@ -34,7 +34,14 @@ router.get('/', async (req: Request, res: Response) => {
         
         console.log('[DEBUG] Feed rows returned:', rows);
         
-        res.json(rows);
+        res.json(
+          rows.map(post => ({
+            id: post.post_id, 
+            content: post.content,
+            created_at: post.created_at,
+            username: post.username
+          }))
+        );
 
     } catch (error) {
         console.error('Error fetching feed:', error);
