@@ -32,36 +32,66 @@ export const createPost = async (req: Request, res: Response) => {
     }
 };
 
-// --- Like Post ---
-export const likePost = async (req: Request, res: Response) => {
+// React  to post
+export const reactToPost = async (req: Request, res: Response) => {
     const userId = req.session?.userId;
     const postId = parseInt(req.params.id, 10);
+    const { reactionType } = req.body;
+
+    const validReactions = ['like', 'laugh', 'heart'];
 
     if (!userId) return res.status(401).json({ message: 'Not logged in' });
+    if (!validReactions.includes(reactionType)) {
+        return res.status(400).json({ message: 'Invalid reaction type' });
+    }
     if (isNaN(postId)) return res.status(400).json({ message: 'Invalid post ID' });
 
     try {
         const pool = await getDbPool();
 
-        // Check if user already liked
-        const [existingLikes] = await pool.query<RowDataPacket[]>(
-            'SELECT * FROM likes WHERE user_id = ? AND post_id = ?',
-            [userId, postId]
+        // Check if this reaction already exists
+        const [existing] = await pool.query<RowDataPacket[]>(
+            'SELECT * FROM post_reactions WHERE user_id = ? AND post_id = ? AND reaction_type = ?',
+            [userId, postId, reactionType]
         );
 
-        if (existingLikes.length > 0) {
-            return res.status(400).json({ message: 'You already liked this post' });
+        if (existing.length > 0) {
+            // User is toggling off the reaction
+            await pool.query(
+                'DELETE FROM post_reactions WHERE user_id = ? AND post_id = ? AND reaction_type = ?',
+                [userId, postId, reactionType]
+            );
+        } else {
+            // Add new reaction
+            await pool.query(
+                'INSERT INTO post_reactions (user_id, post_id, reaction_type) VALUES (?, ?, ?)',
+                [userId, postId, reactionType]
+            );
         }
 
-        await pool.query<OkPacket>(
-            'INSERT INTO likes (user_id, post_id) VALUES (?, ?)',
-            [userId, postId]
+        // Return updated reaction counts
+        const [counts] = await pool.query<RowDataPacket[]>(
+            `SELECT reaction_type, COUNT(*) as count
+             FROM post_reactions
+             WHERE post_id = ?
+             GROUP BY reaction_type`,
+            [postId]
         );
 
-        res.status(201).json({ message: 'Post liked' });
+        const reactionSummary = {
+            like: 0,
+            laugh: 0,
+            heart: 0,
+        };
+
+        counts.forEach(row => {
+            reactionSummary[row.reaction_type] = row.count;
+        });
+
+        res.json({ message: 'Reaction updated', reactions: reactionSummary });
     } catch (err) {
-        console.error('Error liking post:', err);
-        res.status(500).json({ message: 'Failed to like post' });
+        console.error('Error reacting to post:', err);
+        res.status(500).json({ message: 'Failed to react to post' });
     }
 };
 
