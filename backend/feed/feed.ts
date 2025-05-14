@@ -32,10 +32,10 @@ router.get('/', async (req: Request, res: Response) => {
 
         const [rows] = await pool.query<FeedPost[]>(query);
         
-        console.log('[DEBUG] Feed rows returned:', rows);
+        console.log('[DEBUG] Rows before mapping:', rows);
         
         res.json(
-          rows.map(post => ({
+          rows.map((post: FeedPost) => ({
             id: post.post_id, 
             content: post.content,
             created_at: post.created_at,
