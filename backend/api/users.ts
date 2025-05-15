@@ -77,25 +77,27 @@ router.get('/me', isAuthenticated, async (req: Request, res: Response) => {
 
 // PUT /api/users/me - Update current authenticated user's profile
 router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
+    console.log('--- PUT /api/users/me route handler ENTERED ---');
+
     if (!dbPool) {
+        console.error('PUT /api/users/me: dbPool not available!');
         return res.status(503).json({ message: 'Database service not available.' });
     }
     const userId = req.session.userId;
+    // console.log(`PUT /api/users/me: Received request for userId: ${userId}`);
+
     const {
         // role, // Not typically sent from basic profile edit form
         displayName, 
         program,     
         bio          
     } = req.body;
+    // console.log(`PUT /api/users/me: Body params:`, { displayName, program, bio });
 
-    // It seems your frontend only sends displayName and bio right now
-    // console.log("Received for update:", { userId, displayName, program, bio }); // Optional: for debugging
-
-    // --- Start a transaction ---
-    // Transactions are important here to ensure that updates to multiple tables
-    // either all succeed or all fail.
     const connection = await dbPool.getConnection();
+    // console.log('PUT /api/users/me: Database connection obtained.');
     await connection.beginTransaction();
+    // console.log('PUT /api/users/me: Transaction started.');
 
     try {
         // 1. Update 'users' table (only if 'role' is provided)
@@ -162,13 +164,13 @@ router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
         res.json(updatedRows[0] as UserProfile);
 
     } catch (error) {
-        await connection.rollback(); // Rollback on any error
-        console.error('Error updating user profile:', error);
-        // Check for specific SQL errors if needed, e.g., duplicate entry for unique constraints
-        // if not handled by UPSERT directly (though UPSERT should handle PK conflicts).
+        // console.log('PUT /api/users/me: ERROR caught in try-catch block.');
+        await connection.rollback(); 
+        console.error('Error updating user profile (users.ts PUT /me):', error); 
         res.status(500).json({ message: 'Failed to update user profile.' });
     } finally {
-        connection.release(); // Always release the connection
+        // console.log('PUT /api/users/me: Releasing database connection.');
+        connection.release(); 
     }
 });
 
