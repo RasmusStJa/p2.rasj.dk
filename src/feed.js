@@ -98,9 +98,9 @@ function renderPosts(posts) {
                 </div>
                 <p class="post-content">${post.content}</p>
                 <div class="post-actions">
-                    <button class="reaction-btn" data-reaction="like">👍 Like (<span class="reaction-count">${post.reactions.like}</span>)</button>
-                    <button class="reaction-btn" data-reaction="laugh">😂 Laugh (<span class="reaction-count">${post.reactions.laugh}</span>)</button>
-                    <button class="reaction-btn" data-reaction="heart">❤️ Heart (<span class="reaction-count">${post.reactions.heart}</span>)</button>
+                    <button class="reaction-btn" data-reaction="like">👍 <span class="reaction-count">${post.reactions.like}</span></button>
+                    <button class="reaction-btn" data-reaction="laugh">😂 <span class="reaction-count">${post.reactions.laugh}</span></button>
+                    <button class="reaction-btn" data-reaction="heart">❤️ <span class="reaction-count">${post.reactions.heart}</span></button>
                     <button class="comment-btn">💬 Comment</button>
                     <div class="comment-box hidden">
                         <input type="text" placeholder="Write a comment..." class="comment-input"/>
