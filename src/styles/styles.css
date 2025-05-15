@@ -514,8 +514,7 @@ form button {
 
 .post-form {
     width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
+    margin: 0 auto 30px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -523,13 +522,15 @@ form button {
 
 .fixed-post-form {
     position: fixed;
-    bottom: 0; left: 50%;
-    transform: translateX(-50%);
+    bottom: 0;
+    left: 0;
+    width: 100%;
     background: var(--bg-color);
     padding: 16px 20px;
+    margin: 0;
     border-top: 1px solid #ccc;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     z-index: 1000;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
 }
 
@@ -543,8 +544,10 @@ form button {
     border: 1px solid #ccc;
     background-color: var(--form-bg);
     color: var(--text-color);
+    box-shadow: var(--shadow);
     resize: none;
     overflow-y: auto;
+    box-sizing: border-box;
 }
 
 .post-form button {
