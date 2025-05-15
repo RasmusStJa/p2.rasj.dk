@@ -1,4 +1,5 @@
 async function loadContent(section) {
+    console.log("loadContent CALLED with section:", section);
     const contentDiv = document.getElementById('content');
     const links = document.querySelectorAll('.topnav a');
 
