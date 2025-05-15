@@ -115,8 +115,6 @@ async function handleProfileUpdate(event) {
 
 // Call loadUserProfile when the page loads
 window.addEventListener('DOMContentLoaded', () => {
-    if (!document.getElementById('userProfile')) return;
-    
     loadUserProfile();
 
     // Attach event listener to the edit profile form
