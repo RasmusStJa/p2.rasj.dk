@@ -113,7 +113,8 @@ async function handleProfileUpdate(event) {
 
 // --- Event Listeners ---
 
-// Call loadUserProfile when the page loads
+// ENSURE THIS ENTIRE BLOCK IS COMMENTED OUT OR REMOVED:
+/*
 window.addEventListener('DOMContentLoaded', () => {
     loadUserProfile();
 
@@ -123,4 +124,5 @@ window.addEventListener('DOMContentLoaded', () => {
         editProfileForm.addEventListener('submit', handleProfileUpdate);
     }
 });
+*/
   
