@@ -53,8 +53,6 @@ async function loadContent(section) {
                         attachLoginListener();
                     } else if (section === 'signup') {
                         attachSignupListener();
-                    } else if (section === 'feed') {
-                        loadFeed();
                     }
                 });
             } else {

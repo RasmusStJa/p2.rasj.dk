@@ -32,12 +32,7 @@ interface UserRow extends RowDataPacket {
 // Enable CORS if your frontend is on a different origin (e.g., different port during development)
 app.use(cors({
   origin: 'https://p2.rasj.dk',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Content-Range', 'X-Content-Range'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204
+  credentials: true
 })); // Configure with options if needed, e.g., app.use(cors({ origin: 'http://localhost:8080', credentials: true }));
 
 // Body parsing middleware
