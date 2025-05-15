@@ -405,6 +405,11 @@ form button {
     color: var(--text-color);
 }
 
+.feed-section {
+    padding: 60px 20px;
+}
+
+
 .posts-container {
     flex: 1;
     overflow-y: auto;
