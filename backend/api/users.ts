@@ -80,13 +80,16 @@ router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
     if (!dbPool) {
         return res.status(503).json({ message: 'Database service not available.' });
     }
-    const userId = (req.user as any).id;
+    const userId = req.session.userId;
     const {
-        role, // Goes to 'users' table
-        displayName, // Goes to 'user_profiles' table (as display_name)
-        program,     // Goes to 'user_profiles' table
-        bio          // Goes to 'user_profiles' table
+        // role, // Not typically sent from basic profile edit form
+        displayName, 
+        program,     
+        bio          
     } = req.body;
+
+    // It seems your frontend only sends displayName and bio right now
+    // console.log("Received for update:", { userId, displayName, program, bio }); // Optional: for debugging
 
     // --- Start a transaction ---
     // Transactions are important here to ensure that updates to multiple tables
@@ -96,7 +99,9 @@ router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
 
     try {
         // 1. Update 'users' table (only if 'role' is provided)
-        if (role !== undefined) {
+        // --- COMMENT OUT OR DELETE THIS ENTIRE 'if' BLOCK ---
+        /*
+        if (role !== undefined) { 
             if (typeof role !== 'string' || !['student', 'staff'].includes(role.toLowerCase())) { // Validate role
                 await connection.rollback();
                 return res.status(400).json({ message: 'Invalid role specified. Must be "student" or "staff".' });
@@ -106,12 +111,14 @@ router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
                 [role, userId]
             );
         }
+        */
+        // --- END OF BLOCK TO COMMENT OR DELETE ---
 
         // 2. Update 'user_profiles' table
         // Prepare fields for user_profiles update or insert
         const profileFields: { [key: string]: any } = {};
-        if (displayName !== undefined) profileFields.display_name = displayName; // map to schema column name
-        if (program !== undefined) profileFields.program = program;
+        if (displayName !== undefined) profileFields.display_name = displayName;
+        if (program !== undefined) profileFields.program = program; // Keep if you might send it
         if (bio !== undefined) profileFields.bio = bio;
 
         if (Object.keys(profileFields).length > 0) {
