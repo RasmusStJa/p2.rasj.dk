@@ -15,7 +15,7 @@ services:
       - cert-data:/etc/letsencrypt/live/p2.rasj.dk    
       - cert-challenge:/var/www/cert-challenge  
 
-certbot:
+  certbot:
     image: certbot/certbot
     container_name: certbot
     volumes:
@@ -35,7 +35,6 @@ certbot:
         # After obtaining, just sleep to keep container alive:
         tail -f /dev/null
       "
-
 
 # Backend Service (Node.js Application)
   backend:

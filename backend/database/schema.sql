@@ -1,5 +1,3 @@
-
-
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -7,6 +5,14 @@ CREATE TABLE users (
     password_hash VARCHAR(255) NOT NULL,
     role VARCHAR(20) NOT NULL, -- 'student' or 'staff'
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_profiles (
+    user_id BIGINT UNSIGNED PRIMARY KEY,
+    display_name VARCHAR(100),
+    program VARCHAR(100),
+    bio TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE -- Example FK
 );
 
 CREATE TABLE friends (
@@ -28,7 +34,6 @@ Create TABLE follows (
     FOREIGN KEY (following_id) REFERENCES users(user_id)
 );
 
-
 CREATE TABLE messages (
     message_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     sender_id BIGINT UNSIGNED,
@@ -38,7 +43,6 @@ CREATE TABLE messages (
     FOREIGN KEY (sender_id) REFERENCES users(user_id),
     FOREIGN KEY (receiver_id) REFERENCES users(user_id)
 );
-
 
 /*
 INSERT INTO users (username, email, password_hash, role)

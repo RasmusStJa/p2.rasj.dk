@@ -37,3 +37,36 @@
       </div>
 </div>
   
+<!-- Profile Display Area -->
+<div id="userProfile">
+    <h2>My Profile</h2>
+    <p><strong>Username:</strong> <span id="profileUsername"></span></p>
+    <p><strong>Display Name:</strong> <span id="profileDisplayName"></span></p>
+    <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+    <p><strong>Bio:</strong> <span id="profileBio"></span></p>
+    <button onclick="openEditProfileModal()">Edit Profile</button>
+</div>
+
+<!-- Edit Profile Modal (adapting your existing modal structure) -->
+<div id="projectModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close-button" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle">Edit Profile</h2>
+        <form id="editProfileForm">
+            <div>
+                <label for="editDisplayName">Display Name:</label>
+                <input type="text" id="editDisplayName" name="displayName">
+            </div>
+            <div>
+                <label for="editBio">Bio:</label>
+                <textarea id="editBio" name="bio"></textarea>
+            </div>
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<!-- Link to your existing profile.js or a new script -->
+<!-- <script src="src/profile.js"></script> -->
+<!-- <script src="src/profile-view.js"></script> -->
+  
