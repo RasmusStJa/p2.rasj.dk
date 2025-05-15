@@ -13,6 +13,7 @@ import signupRouter from './signup/signup'; // Import the new signup router
 import feedRouter from './feed/feed';
 import postRouter from './post/post.routes'; // Import the new post router
 import followsRouter from './follows/follows';
+import userRouter from './api/users'; // Adjust path as needed
 
 // Import and configure database connection
 import initializeDbPool from './db';
@@ -99,6 +100,7 @@ app.use('/api/auth/signup', signupRouter); // Signup routes will be under /signu
 app.use('/api/feed', feedRouter);   // Feed routes will be under /api/feed
 app.use('/api/posts', postRouter);  // Mount the post router
 app.use('/api/follows', followsRouter);
+app.use('/api/users', userRouter); // Mount the new user routes
 
 // --- Static Files (Optional) ---
 // If you want Express to serve static files from 'public' (like your original feed.html, CSS, frontend JS)
