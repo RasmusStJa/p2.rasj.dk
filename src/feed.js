@@ -129,7 +129,10 @@ function renderPosts(posts) {
                 if (res.ok) {
                     const data = await res.json();
                     // Update the reaction count in the UI
-                    postCard.querySelector(`.reaction-count`).textContent = data.reactions[reactionType];
+                    const countSpan = btn.querySelector('.reaction-count');
+                        if (countSpan) {
+                          countSpan.textContent = data.reactions[reactionType] ?? 0;
+                        }
                 }
             } catch (err) {
                 console.error('Failed to react to post:', err);
