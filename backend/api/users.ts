@@ -15,9 +15,9 @@ interface UserProfile {
     created_at?: string;     // From users table (optional to send to frontend)
 }
 
-// Middleware to check if user is authenticated (example - ensure this is your actual auth check)
+// Middleware to check if user is authenticated 
 const isAuthenticated = (req: Request, res: Response, next: Function) => {
-    if (req.user && (req.user as any).id) { // Adjust req.user.id to your actual user identifier path
+    if (req.session && req.session.userId) {
         return next();
     }
     res.status(401).json({ message: 'Unauthorized: Please log in.' });
@@ -39,7 +39,7 @@ router.get('/me', isAuthenticated, async (req: Request, res: Response) => {
     if (!dbPool) {
         return res.status(503).json({ message: 'Database service not available.' });
     }
-    const userId = (req.user as any).id;
+    const userId = req.session.userId;
 
     try {
         const sql = `

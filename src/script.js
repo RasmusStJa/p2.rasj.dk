@@ -46,32 +46,13 @@ async function loadContent(section) {
         .then(data => {
             if (contentDiv) {
                 contentDiv.innerHTML = data;
+
                 // Attach listeners after a short delay to ensure elements are present
                 requestAnimationFrame(() => {
                     if (section === 'login') {
                         attachLoginListener();
                     } else if (section === 'signup') {
                         attachSignupListener();
-                    } else if (section === 'profile') {
-                        // Call loadUserProfile if it's available
-                        if (typeof loadUserProfile === 'function') {
-                            loadUserProfile();
-                        } else {
-                            console.error('loadUserProfile function not found. Ensure profile.js is loaded and accessible.');
-                        }
-                        // Attach event listener to the edit profile form
-                        const editProfileForm = document.getElementById('editProfileForm');
-                        if (editProfileForm && typeof handleProfileUpdate === 'function') {
-                            // Check if listener already exists to prevent duplicates if profile is reloaded
-                            if (!editProfileForm.hasAttribute('data-listener-attached')) {
-                                editProfileForm.addEventListener('submit', handleProfileUpdate);
-                                editProfileForm.setAttribute('data-listener-attached', 'true');
-                            }
-                        } else if (editProfileForm && typeof handleProfileUpdate !== 'function') {
-                            // This condition might be noisy if elements aren't found immediately,
-                            // but can be useful for debugging if functions are missing.
-                            // console.error('handleProfileUpdate function not found for editProfileForm, or form itself not found.');
-                        }
                     }
                 });
             } else {
