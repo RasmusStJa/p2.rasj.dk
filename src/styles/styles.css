@@ -420,8 +420,8 @@ form button {
     border: 1px solid var(--shadow);
     border-radius: 12px;
     box-shadow: var(--shadow);
-    width: 100%;
-    max-width: 500px;    
+    width: 500px;
+    max-width: 100%;   
     box-sizing: border-box;
     padding: 16px 20px;
 }
@@ -448,7 +448,8 @@ form button {
 
 .post-actions {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;         
+    align-items: center;
     gap: 0.5rem;
 }
 
