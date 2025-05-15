@@ -519,11 +519,15 @@ form button {
   display: inline-flex;
   align-items: center;
   color: var(--text-color);
-  transition: color 0.2s, transform 0.1s;
 }
 
-.reaction-btn:hover {
-  transform: scale(1.1);
+.reaction-emoji {
+  display: inline-block;
+  transition: transform .1s ease;
+}
+
+.reaction-btn:hover .reaction-emoji {
+  transform: scale(1.2);
 }
 
 .reaction-btn.selected {
@@ -554,4 +558,21 @@ form button {
 .post-time {
   font-size: 0.85rem;
   color: var(--subtext-color);
+}
+
+.post-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.comment-btn {
+  margin-top: 0.5rem;
+  flex-basis: 100%;
+  text-align: left;
+}
+
+.post-content {
+  text-align: left;
+  width: 100%;
 }
