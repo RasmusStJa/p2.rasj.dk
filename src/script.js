@@ -53,6 +53,31 @@ async function loadContent(section) {
                         attachLoginListener();
                     } else if (section === 'signup') {
                         attachSignupListener();
+                    } else if (section === 'profile') {
+                        // Call loadUserProfile if it's available
+                        if (typeof loadUserProfile === 'function') {
+                            console.log("Calling loadUserProfile from script.js"); // Debug log
+                            loadUserProfile();
+                        } else {
+                            console.error('loadUserProfile function not found from script.js. Ensure profile.js is loaded and accessible.');
+                        }
+                        // Attach event listener to the edit profile form
+                        const editProfileForm = document.getElementById('editProfileForm');
+                        if (editProfileForm && typeof handleProfileUpdate === 'function') {
+                            // Check if listener already exists to prevent duplicates
+                            if (!editProfileForm.hasAttribute('data-listener-attached')) {
+                                console.log("Attaching submit listener to editProfileForm from script.js"); // Debug log
+                                editProfileForm.addEventListener('submit', handleProfileUpdate);
+                                editProfileForm.setAttribute('data-listener-attached', 'true');
+                            }
+                        } else if (section === 'profile') { // More specific check
+                            if (!editProfileForm) {
+                                console.warn('editProfileForm not found in DOM when script.js tried to attach listener.');
+                            }
+                            if (typeof handleProfileUpdate !== 'function') {
+                                console.warn('handleProfileUpdate function not found when script.js tried to attach listener.');
+                            }
+                        }
                     }
                 });
             } else {
