@@ -27,7 +27,9 @@ function toggleFollow(button) {
 async function loadUserProfile() {
     try {
         // Assume your backend API endpoint for the current user is /api/users/me
-        const response = await fetch('/api/users/me'); // GET request
+        const response = await fetch('/api/users/me', { // GET request
+            credentials: 'include'
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -80,6 +82,7 @@ async function handleProfileUpdate(event) {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify({ displayName, bio }),
         });
 
