@@ -54,6 +54,8 @@ async function loadContent(section) {
                         attachLoginListener();
                     } else if (section === 'signup') {
                         attachSignupListener();
+                    } else if (section === 'feed') {
+                        loadFeed();
                     } else if (section === 'profile') {
                         // Call loadUserProfile if it's available
                         if (typeof loadUserProfile === 'function') {
