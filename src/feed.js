@@ -93,7 +93,7 @@ function renderPosts(posts) {
         return `
             <div class="post-card" data-id="${post.post_id}">
                 <div class="post-header">
-                    <a href="/profile.html?userId=${post.user_id}" class="post-user">${post.username}</a>
+                    <a href="/publicProfil/?userId=${post.user_id}" class="post-user">${post.username}</a>
                     <span class="post-time">${formatTime(post.created_at)}</span>
                 </div>
                 <p class="post-content">${post.content}</p>
