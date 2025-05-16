@@ -56,6 +56,8 @@ async function loadContent(section) {
                         attachSignupListener();
                     } else if (section === 'feed') {
                         loadFeed();
+                    } else if (section === 'PublicProfile') {
+                        loadPublicProfile();
                     } else if (section === 'profile') {
                         // Call loadUserProfile if it's available
                         if (typeof loadUserProfile === 'function') {
