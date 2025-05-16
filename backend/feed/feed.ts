@@ -6,8 +6,8 @@ interface FeedPost extends RowDataPacket {
     post_id: number;
     content: string;
     created_at: Date;
-    username: string;
     user_id: number;
+    username: string;
     reactions: {
         like: number;
         laugh: number;
