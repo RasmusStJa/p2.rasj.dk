@@ -36,7 +36,8 @@ router.get('/', async (req: Request, res: Response) => {
             ORDER BY p.created_at DESC;
         `;
 
-        const [posts] = await pool.query<RowDataPacket[]>(query);
+        // const [posts] = await pool.query<RowDataPacket[]>(query);
+        const [posts] = await pool.query<FeedPost[]>(query);
 
 
         for (const post of posts) {
