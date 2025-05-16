@@ -151,28 +151,29 @@ async function handleProfileUpdate(event) {
 
 
 async function loadPublicProfile() {
-            const params = new URLSearchParams(window.location.search);
-            const userId = params.get('userId');
+    const hash = window.location.hash; 
+    const parts = hash.split('/');     
+    const userId = parts[1];           
 
-            if (!userId) {
-                alert('No userId specified.');
-                return;
-            }
+    if (!userId) {
+        alert('No userId specified.');
+        return;
+    }
 
-            try {
-                const res = await fetch(`/api/profile/${userId}`, { credentials: 'include' });
-                if (!res.ok) throw new Error('Failed to load profile.');
+    try {
+        const res = await fetch(`/api/publicProfile/${userId}`, { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to load profile.');
 
-                const data = await res.json();
+        const data = await res.json();
 
-                // Display user info
-                document.getElementById('username').textContent = data.user.username;
+        // Display user info
+        document.getElementById('username').textContent = data.user.username;
 
-            } catch (err) {
-                alert(err.message);
-                console.error(err);
-            }
-        }
+    } catch (err) {
+        alert(err.message);
+        console.error(err);
+    }
+}
 
 
 // --- Event Listeners ---
