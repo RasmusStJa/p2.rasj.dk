@@ -149,6 +149,33 @@ async function handleProfileUpdate(event) {
     }
 }
 
+
+async function loadPublicProfile() {
+    const hash = window.location.hash; 
+    const parts = hash.split('/');     
+    const userId = parts[1];           
+
+    if (!userId) {
+        alert('No userId specified.');
+        return;
+    }
+
+    try {
+        const res = await fetch(`/api/publicProfile/${userId}`, { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to load profile.');
+
+        const data = await res.json();
+
+        // Display user info
+        document.getElementById('username').textContent = data.user.username;
+
+    } catch (err) {
+        alert(err.message);
+        console.error(err);
+    }
+}
+
+
 // --- Event Listeners ---
 
 // ENSURE THIS ENTIRE BLOCK IS COMMENTED OUT OR REMOVED:

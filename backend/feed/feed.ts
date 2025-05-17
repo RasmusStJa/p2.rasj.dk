@@ -6,6 +6,7 @@ interface FeedPost extends RowDataPacket {
     post_id: number;
     content: string;
     created_at: Date;
+    user_id: number;
     username: string;
     reactions: {
         like: number;
@@ -29,13 +30,14 @@ router.get('/', async (req: Request, res: Response) => {
         const pool = await getDbPool();
 
         const query = `
-            SELECT p.post_id, p.content, p.created_at, u.username
+            SELECT p.post_id, p.content, p.created_at, u.user_id, u.username
             FROM posts p
             JOIN users u ON p.user_id = u.user_id
             ORDER BY p.created_at DESC;
         `;
 
-        const [posts] = await pool.query<RowDataPacket[]>(query);
+        // const [posts] = await pool.query<RowDataPacket[]>(query);
+        const [posts] = await pool.query<FeedPost[]>(query);
 
 
         for (const post of posts) {
