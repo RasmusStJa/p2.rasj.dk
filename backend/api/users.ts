@@ -152,7 +152,7 @@ router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
             LEFT JOIN user_profiles up ON u.user_id = up.user_id
             WHERE u.user_id = ?
         `;
-        const [updatedRows]: [RowDataPacket[], FieldPacket[]] = await dbPool.query<RowDataPacket[]>(
+        const [updatedRows]: [RowDataPacket[], FieldPacket[]] = await connection.query<RowDataPacket[]>(
             getUpdatedProfileSql,
             [userId]
         );
