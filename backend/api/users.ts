@@ -84,51 +84,30 @@ router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
         return res.status(503).json({ message: 'Database service not available.' });
     }
     const userId = req.session.userId;
-    // console.log(`PUT /api/users/me: Received request for userId: ${userId}`);
+    console.log(`PUT /api/users/me: Received request for userId: ${userId}`);
 
     const {
-        // role, // Not typically sent from basic profile edit form
-        displayName, 
-        program,     
-        bio          
+        displayName,
+        program,
+        bio
     } = req.body;
-    // console.log(`PUT /api/users/me: Body params:`, { displayName, program, bio });
+    console.log(`PUT /api/users/me: Body params:`, { displayName, program, bio });
 
-    const connection = await dbPool.getConnection();
-    // console.log('PUT /api/users/me: Database connection obtained.');
-    await connection.beginTransaction();
-    // console.log('PUT /api/users/me: Transaction started.');
+    let connection;
 
     try {
-        // 1. Update 'users' table (only if 'role' is provided)
-        // --- COMMENT OUT OR DELETE THIS ENTIRE 'if' BLOCK ---
-        /*
-        if (role !== undefined) { 
-            if (typeof role !== 'string' || !['student', 'staff'].includes(role.toLowerCase())) { // Validate role
-                await connection.rollback();
-                return res.status(400).json({ message: 'Invalid role specified. Must be "student" or "staff".' });
-            }
-            await connection.query<ResultSetHeader>(
-                'UPDATE users SET role = ? WHERE user_id = ?',
-                [role, userId]
-            );
-        }
-        */
-        // --- END OF BLOCK TO COMMENT OR DELETE ---
+        connection = await dbPool.getConnection();
+        console.log('PUT /api/users/me: Database connection obtained.');
+        await connection.beginTransaction();
+        console.log('PUT /api/users/me: Transaction started.');
 
         // 2. Update 'user_profiles' table
-        // Prepare fields for user_profiles update or insert
         const profileFields: { [key: string]: any } = {};
         if (displayName !== undefined) profileFields.display_name = displayName;
-        if (program !== undefined) profileFields.program = program; // Keep if you might send it
+        if (program !== undefined) profileFields.program = program;
         if (bio !== undefined) profileFields.bio = bio;
 
         if (Object.keys(profileFields).length > 0) {
-            // Try to update existing profile. If no row exists, insert one.
-            // This is an "UPSERT" operation.
-            // For MySQL: INSERT ... ON DUPLICATE KEY UPDATE
-            // For PostgreSQL: INSERT ... ON CONFLICT ... DO UPDATE
-            // Assuming MySQL syntax for user_profiles PK (BIGINT UNSIGNED)
             const upsertSql = `
                 INSERT INTO user_profiles (user_id, ${Object.keys(profileFields).join(', ')})
                 VALUES (?, ${Object.values(profileFields).map(() => '?').join(', ')})
@@ -136,14 +115,14 @@ router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
                 ${Object.keys(profileFields).map(key => `${key} = VALUES(${key})`).join(', ')}
             `;
             const upsertValues = [userId, ...Object.values(profileFields)];
-            
+            console.log('PUT /api/users/me: Executing UPSERT SQL:', upsertSql, upsertValues);
             await connection.query<ResultSetHeader>(upsertSql, upsertValues);
+            console.log('PUT /api/users/me: UPSERT SQL executed.');
         }
 
-        // --- Commit transaction ---
         await connection.commit();
+        console.log('PUT /api/users/me: Transaction committed.');
 
-        // Fetch and return the updated profile (as in the GET request)
         const getUpdatedProfileSql = `
             SELECT
                 u.user_id, u.username, u.email, u.role, u.created_at,
@@ -152,40 +131,49 @@ router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
             LEFT JOIN user_profiles up ON u.user_id = up.user_id
             WHERE u.user_id = ?
         `;
+        console.log('PUT /api/users/me: Fetching updated profile SQL:', getUpdatedProfileSql, [userId]);
         const [updatedRows]: [RowDataPacket[], FieldPacket[]] = await connection.query<RowDataPacket[]>(
             getUpdatedProfileSql,
             [userId]
         );
+        console.log('PUT /api/users/me: Updated profile fetched, rows count:', updatedRows.length);
         
         if (updatedRows.length === 0) {
-            // This case should ideally not be reached if the user exists and the update was successful.
-            // However, if it does, it's an inconsistent state.
-            // We'll signal an error that will be caught by the catch block.
+            console.error('PUT /api/users/me: Updated user profile could not be retrieved after commit. UserID:', userId);
             throw new Error('Updated user profile could not be retrieved after commit.');
         }
+        console.log('PUT /api/users/me: Sending updated profile data as JSON.');
         res.json(updatedRows[0] as UserProfile);
 
-    } catch (error) {
-        // console.log('PUT /api/users/me: ERROR caught in try-catch block.');
-        // Attempt to rollback the transaction if an error occurs.
-        // If rollback fails or transaction was already handled, this might throw, but we are already in an error state.
-        try {
-            if (connection) { // Check if connection was successfully obtained
-                 await connection.rollback(); 
+    } catch (error: any) {
+        console.error('PUT /api/users/me: ERROR caught in try-catch block. Details:', error);
+        if (connection) {
+            try {
+                console.log('PUT /api/users/me: Attempting to rollback transaction.');
+                await connection.rollback();
+                console.log('PUT /api/users/me: Transaction rolled back.');
+            } catch (rollbackError) {
+                console.error('PUT /api/users/me: Error during rollback attempt:', rollbackError);
             }
-        } catch (rollbackError) {
-            console.error('Error during rollback attempt:', rollbackError);
         }
 
-        console.error('Error updating user profile (users.ts PUT /me):', error); 
-        // Check if response has already been sent before sending another one.
         if (!res.headersSent) {
-            res.status(500).json({ message: 'Failed to update user profile.' });
+            console.log('PUT /api/users/me: Headers not sent, sending JSON error response.');
+            res.status(500).json({ message: error.message || 'Failed to update user profile due to an internal error.' });
+        } else {
+            console.log('PUT /api/users/me: Headers already sent, cannot send JSON error response.');
         }
     } finally {
-        // console.log('PUT /api/users/me: Releasing database connection.');
-        if (connection) { // Ensure connection exists before trying to release
-            connection.release(); 
+        if (connection) {
+            try {
+                console.log('PUT /api/users/me: Releasing database connection in finally block.');
+                await connection.release();
+                console.log('PUT /api/users/me: Database connection released.');
+            } catch (releaseError) {
+                console.error('PUT /api/users/me: Error releasing database connection in finally block:', releaseError);
+            }
+        } else {
+            console.log('PUT /api/users/me: No database connection to release in finally block.');
         }
     }
 });
