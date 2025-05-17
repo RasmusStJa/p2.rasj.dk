@@ -158,19 +158,35 @@ router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
         );
         
         if (updatedRows.length === 0) {
-            // Should not happen if user exists and updates were committed
-            return res.status(404).json({ message: 'Updated user profile could not be retrieved.' });
+            // This case should ideally not be reached if the user exists and the update was successful.
+            // However, if it does, it's an inconsistent state.
+            // We'll signal an error that will be caught by the catch block.
+            throw new Error('Updated user profile could not be retrieved after commit.');
         }
         res.json(updatedRows[0] as UserProfile);
 
     } catch (error) {
         // console.log('PUT /api/users/me: ERROR caught in try-catch block.');
-        await connection.rollback(); 
+        // Attempt to rollback the transaction if an error occurs.
+        // If rollback fails or transaction was already handled, this might throw, but we are already in an error state.
+        try {
+            if (connection) { // Check if connection was successfully obtained
+                 await connection.rollback(); 
+            }
+        } catch (rollbackError) {
+            console.error('Error during rollback attempt:', rollbackError);
+        }
+
         console.error('Error updating user profile (users.ts PUT /me):', error); 
-        res.status(500).json({ message: 'Failed to update user profile.' });
+        // Check if response has already been sent before sending another one.
+        if (!res.headersSent) {
+            res.status(500).json({ message: 'Failed to update user profile.' });
+        }
     } finally {
         // console.log('PUT /api/users/me: Releasing database connection.');
-        connection.release(); 
+        if (connection) { // Ensure connection exists before trying to release
+            connection.release(); 
+        }
     }
 });
 
