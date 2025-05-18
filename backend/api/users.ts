@@ -75,7 +75,7 @@ router.get('/me', isAuthenticated, async (req: Request, res: Response) => {
     }
 });
 
-router.get('/users/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     if (!dbPool) {
         return res.status(503).json({ message: 'Database service not available.' });
     }
