@@ -107,11 +107,11 @@ app.use('/api/users', userRouter); // Mount the new user routes
 app.use('/api/publicProfile', publicProfileRouter);
 
 
-// --- Error Handling (Basic Example) ---
-// Add more specific error handling middleware as needed
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
+  console.error(err.stack);
+  if (!res.headersSent) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 
