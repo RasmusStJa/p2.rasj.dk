@@ -150,10 +150,7 @@ async function handleProfileUpdate(event) {
 }
 
 
-async function loadPublicProfile() {
-    const hash = window.location.hash; 
-    const parts = hash.split('/');     
-    const userId = parts[1];           
+async function loadPublicProfile() {         
 
     if (!userId) {
         alert('No userId specified.');
@@ -172,6 +169,62 @@ async function loadPublicProfile() {
     } catch (err) {
         alert(err.message);
         console.error(err);
+    }
+}
+
+async function loadPublicProfile() {
+    const hash = window.location.hash; 
+    const parts = hash.split('/');     
+    const userId = parts[1];  
+
+    if (!userId) {
+        alert('No userId specified.');
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/users/${userId}`, {
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            console.error("Response not OK (inside profile.js):", response.status, response.statusText);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const userData = await response.json();
+
+        const profileUsernameEl = document.getElementById('profileUsername');
+        if (profileUsernameEl) {
+            profileUsernameEl.textContent = userData.username || 'N/A';
+        } else {
+            console.warn("#profileUsername element not found (inside profile.js)");
+        }
+        
+        const profileDisplayNameEl = document.getElementById('profileDisplayName');
+        if (profileDisplayNameEl) {
+            profileDisplayNameEl.textContent = userData.displayName || 'N/A';
+        } else {
+            console.warn("#profileDisplayName element not found (inside profile.js)");
+        }
+
+        const profileEmailEl = document.getElementById('profileEmail');
+        if (profileEmailEl) {
+            profileEmailEl.textContent = userData.email || 'N/A';
+        } else {
+            console.warn("#profileEmail element not found (inside profile.js)");
+        }
+        
+        const profileBioEl = document.getElementById('profileBio');
+        if (profileBioEl) {
+            profileBioEl.textContent = userData.bio || 'N/A';
+        } else {
+            console.warn("#profileBio element not found (inside profile.js)");
+        }
+
+    } catch (error) {
+        console.error('Failed to load user profile (inside catch block in profile.js):', error);
+        // Display an error message to the user
     }
 }
 
