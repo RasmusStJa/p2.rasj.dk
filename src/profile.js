@@ -24,72 +24,65 @@ function toggleFollow(button) {
 // --- New Profile View and Edit Functions ---
 
 // Function to fetch and display user profile data
-async function loadUserProfile() {
-    console.log("loadUserProfile function CALLED (inside profile.js)");
+async function loadProfile(id) {
+    let endpoint = '/api/users/';
+    let isSelf = false;
+
+    if (!id) {
+        alert('No userId specified.');
+        return;
+    }
+
+    if (id === 'me') {
+        endpoint += 'me';
+        isSelf = true;
+    } else if (typeof id === 'string' || typeof id === 'number') {
+        endpoint += id;
+    } else {
+        console.error('Invalid user ID provided to loadProfile:', id);
+        return;
+    }
+
     try {
-        console.log("Attempting to fetch /api/users/me... (inside profile.js)");
-        const response = await fetch('/api/users/me', { // GET request
+        const response = await fetch(endpoint, {
             credentials: 'include'
         });
-        console.log("Fetch response received (inside profile.js):", response);
 
         if (!response.ok) {
             console.error("Response not OK (inside profile.js):", response.status, response.statusText);
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
-        console.log("Attempting to parse response JSON... (inside profile.js)");
+
         const userData = await response.json();
-        console.log("userData received (inside profile.js):", userData);
 
         // Populate profile display
         const profileUsernameEl = document.getElementById('profileUsername');
-        if (profileUsernameEl) {
-            profileUsernameEl.textContent = userData.username || 'N/A';
-        } else {
-            console.warn("#profileUsername element not found (inside profile.js)");
-        }
-        
+        if (profileUsernameEl) profileUsernameEl.textContent = userData.username || 'N/A';
+
         const profileDisplayNameEl = document.getElementById('profileDisplayName');
-        if (profileDisplayNameEl) {
-            profileDisplayNameEl.textContent = userData.displayName || 'N/A';
-        } else {
-            console.warn("#profileDisplayName element not found (inside profile.js)");
-        }
+        if (profileDisplayNameEl) profileDisplayNameEl.textContent = userData.displayName || 'N/A';
 
         const profileEmailEl = document.getElementById('profileEmail');
-        if (profileEmailEl) {
-            profileEmailEl.textContent = userData.email || 'N/A';
-        } else {
-            console.warn("#profileEmail element not found (inside profile.js)");
-        }
-        
-        const profileBioEl = document.getElementById('profileBio');
-        if (profileBioEl) {
-            profileBioEl.textContent = userData.bio || 'N/A';
-        } else {
-            console.warn("#profileBio element not found (inside profile.js)");
-        }
+        if (profileEmailEl) profileEmailEl.textContent = userData.email || 'N/A';
 
-        // Pre-fill edit form (if elements exist)
-        const editDisplayName = document.getElementById('editDisplayName');
-        const editBio = document.getElementById('editBio');
-        if (editDisplayName) {
-            editDisplayName.value = userData.displayName || '';
-        } else {
-            console.warn("#editDisplayName element not found for pre-fill (inside profile.js)");
-        }
-        if (editBio) {
-            editBio.value = userData.bio || '';
-        } else {
-            console.warn("#editBio element not found for pre-fill (inside profile.js)");
+        const profileBioEl = document.getElementById('profileBio');
+        if (profileBioEl) profileBioEl.textContent = userData.bio || 'N/A';
+
+        // If it's your own profile, pre-fill the edit form
+        if (isSelf) {
+            const editDisplayName = document.getElementById('editDisplayName');
+            const editBio = document.getElementById('editBio');
+
+            if (editDisplayName) editDisplayName.value = userData.displayName || '';
+            if (editBio) editBio.value = userData.bio || '';
         }
 
     } catch (error) {
-        console.error('Failed to load user profile (inside catch block in profile.js):', error);
-        // Display an error message to the user
+        console.error('Failed to load user profile:', error);
+        alert(`Failed to load profile: ${error.message}`);
     }
 }
+
 
 // Function to open the edit profile modal
 function openEditProfileModal() {
@@ -148,86 +141,6 @@ async function handleProfileUpdate(event) {
         alert(`Error updating profile: ${error.message}`);
     }
 }
-
-
-async function loadPublicProfile() {         
-
-    if (!userId) {
-        alert('No userId specified.');
-        return;
-    }
-
-    try {
-        const res = await fetch(`/api/publicProfile/${userId}`, { credentials: 'include' });
-        if (!res.ok) throw new Error('Failed to load profile.');
-
-        const data = await res.json();
-
-        // Display user info
-        document.getElementById('username').textContent = data.user.username;
-
-    } catch (err) {
-        alert(err.message);
-        console.error(err);
-    }
-}
-
-async function loadPublicProfile() {
-    const hash = window.location.hash; 
-    const parts = hash.split('/');     
-    const userId = parts[1];  
-
-    if (!userId) {
-        alert('No userId specified.');
-        return;
-    }
-
-    try {
-        const response = await fetch(`/api/users/${userId}`, {
-            credentials: 'include'
-        });
-
-        if (!response.ok) {
-            console.error("Response not OK (inside profile.js):", response.status, response.statusText);
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const userData = await response.json();
-
-        const profileUsernameEl = document.getElementById('profileUsername');
-        if (profileUsernameEl) {
-            profileUsernameEl.textContent = userData.username || 'N/A';
-        } else {
-            console.warn("#profileUsername element not found (inside profile.js)");
-        }
-        
-        const profileDisplayNameEl = document.getElementById('profileDisplayName');
-        if (profileDisplayNameEl) {
-            profileDisplayNameEl.textContent = userData.displayName || 'N/A';
-        } else {
-            console.warn("#profileDisplayName element not found (inside profile.js)");
-        }
-
-        const profileEmailEl = document.getElementById('profileEmail');
-        if (profileEmailEl) {
-            profileEmailEl.textContent = userData.email || 'N/A';
-        } else {
-            console.warn("#profileEmail element not found (inside profile.js)");
-        }
-        
-        const profileBioEl = document.getElementById('profileBio');
-        if (profileBioEl) {
-            profileBioEl.textContent = userData.bio || 'N/A';
-        } else {
-            console.warn("#profileBio element not found (inside profile.js)");
-        }
-
-    } catch (error) {
-        console.error('Failed to load user profile (inside catch block in profile.js):', error);
-        // Display an error message to the user
-    }
-}
-
 
 // --- Event Listeners ---
 
