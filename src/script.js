@@ -1,5 +1,6 @@
 async function loadContent(section) {
-    console.log("loadContent CALLED with section:", section);
+    const [base, id] = section.split('/');
+    const filePath = `/public/${base}.html`;
     const contentDiv = document.getElementById('content');
     const links = document.querySelectorAll('.topnav a');
 
@@ -12,16 +13,14 @@ async function loadContent(section) {
 
     if (links && links.length > 0) {
         links.forEach(link => link.classList.remove('active'));
-        const activeLink = document.querySelector(`.topnav a[href="#${section}"]`);
+        const activeLink = document.querySelector(`.topnav a[href="#${base}"]`);
         if (activeLink) {
             activeLink.classList.add('active');
         }
     }
 
-    const filePath = `/public/${section}.html`;
-
     // Section requires authentication
-    if (isProtectedSection(section)) {
+    if (isProtectedSection(base)) {
         const authenticated = await isAuthenticated();
         if (!authenticated) {
             console.warn('Attempted to access a protected section while not authenticated. Redirecting to login.');
@@ -30,60 +29,50 @@ async function loadContent(section) {
         }
     }
     
-    if (await isAuthenticated() && (section === 'login' || section === 'signup')) {
+     if ((base === 'login' || base === 'signup') && await isAuthenticated()) {
         console.warn('Attempted to access login/signup while authenticated. Redirecting to home.');
         window.location.href = '/#home';  
         return;
     }
 
-    try {
-        const response = await fetch(filePath);
-        if (!response.ok) {
-            console.error(`HTTP error! status: ${response.status} for ${filePath}`);
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+      try {
+        const resp = await fetch(filePath);
+        if (!resp.ok) throw new Error(`Failed to load ${filePath}`);
+        const html = await resp.text();
+        contentDiv.innerHTML = html;
+      } catch (err) {
+        console.error(err);
+        contentDiv.innerHTML = `<p>Failed to load content. Please try again later.</p>`;
+        return;
+      }
 
-        const data = await response.text();
-        contentDiv.innerHTML = data;
+      requestAnimationFrame(async () => {
+          if (section === 'login') {
+              attachLoginListener();
+          } else if (section === 'signup') {
+              attachSignupListener();
+          } else if (section === 'feed') {
+              loadFeed();
+          } else if (section === 'PublicProfile') {
+              loadPublicProfile();
+          } else if (section.startsWith('profile')) {
+              const profileUserId = id || await getCurrentUserId();
+                        
+              if (profileUserId === await getCurrentUserId()) {
+                  loadUserProfile();
+              } else {
+                  loadPublicProfile(profileUserId);
+              }
 
-                // Attach listeners after a short delay to ensure elements are present
-                requestAnimationFrame(async () => {
-                    if (section === 'login') {
-                        attachLoginListener();
-                    } else if (section === 'signup') {
-                        attachSignupListener();
-                    } else if (section === 'feed') {
-                        loadFeed();
-                    } else if (section === 'PublicProfile') {
-                        loadPublicProfile();
-                    } else if (section.startsWith('profile')) {
-                        const currentUserId = await getCurrentUserId();
-                        const hash = window.location.hash; 
-                        const parts = hash.split('/');
-                        const profileUserId = parts[1] || currentUserId;
-
-
-                        if (currentUserId && profileUserId === currentUserId) {
-                            loadUserProfile();
-                        } else {
-                            loadPublicProfile(profileUserId);
-                        }
-
-                        const editProfileForm = document.getElementById('editProfileForm');
-                        if (editProfileForm && typeof handleProfileUpdate === 'function') {
-                            if (!editProfileForm.hasAttribute('data-listener-attached')) {
-                                editProfileForm.addEventListener('submit', handleProfileUpdate);
-                                editProfileForm.setAttribute('data-listener-attached', 'true');
-                            }
-                        }
-                    }  
-                });
-            } catch (error) {
-                console.error(`Error during fetch or processing for ${section}:`, error);
-                if (contentDiv) {
-                    contentDiv.innerHTML = `<p>Failed to load content. Please try again later.</p>`;
-                }
-            }
+              const editProfileForm = document.getElementById('editProfileForm');
+              if (editProfileForm && typeof handleProfileUpdate === 'function') {
+                  if (!editProfileForm.hasAttribute('data-listener-attached')) {
+                      editProfileForm.addEventListener('submit', handleProfileUpdate);
+                      editProfileForm.setAttribute('data-listener-attached', 'true');
+                  }
+              }
+          }  
+      });
 }
 
 function isAuthenticated() {
@@ -119,9 +108,8 @@ async function getCurrentUserId() {
     }
 }
 
-function isProtectedSection(section) {
-    const protectedSections = ['feed', 'profile'];
-    return protectedSections.includes(section);
+function isProtectedSection(base) {
+  return ['feed', 'profile'].includes(base);
 }
 
 function loadContentFromLogo() {
