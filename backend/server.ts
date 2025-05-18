@@ -109,9 +109,7 @@ app.use('/api/publicProfile', publicProfileRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
-  if (!res.headersSent) {
-    res.status(500).json({ error: err.message });
-  }
+    res.status(500).send('Something broke!');
 });
 
 
