@@ -36,20 +36,18 @@ async function loadContent(section) {
         return;
     }
 
-    fetch(filePath)
-        .then(response => {
-            if (!response.ok) {
-                console.error(`HTTP error! status: ${response.status} for ${filePath}`);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text();
-        })
-        .then(data => {
-            if (contentDiv) {
-                contentDiv.innerHTML = data;
+    try {
+        const response = await fetch(filePath);
+        if (!response.ok) {
+            console.error(`HTTP error! status: ${response.status} for ${filePath}`);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.text();
+        contentDiv.innerHTML = data;
 
                 // Attach listeners after a short delay to ensure elements are present
-                requestAnimationFrame(() => {
+                requestAnimationFrame(async () => {
                     if (section === 'login') {
                         attachLoginListener();
                     } else if (section === 'signup') {
@@ -58,43 +56,34 @@ async function loadContent(section) {
                         loadFeed();
                     } else if (section === 'PublicProfile') {
                         loadPublicProfile();
-                    } else if (section === 'profile') {
-                        // Call loadUserProfile if it's available
-                        if (typeof loadUserProfile === 'function') {
-                            console.log("Calling loadUserProfile from script.js"); // Debug log
+                    } else if (section.startsWith('profile')) {
+                        const currentUserId = await getCurrentUserId();
+                        const hash = window.location.hash; 
+                        const parts = hash.split('/');
+                        const profileUserId = parts[1] || currentUserId;
+
+
+                        if (currentUserId && profileUserId === currentUserId) {
                             loadUserProfile();
                         } else {
-                            console.error('loadUserProfile function not found from script.js. Ensure profile.js is loaded and accessible.');
+                            loadPublicProfile(profileUserId);
                         }
-                        // Attach event listener to the edit profile form
+
                         const editProfileForm = document.getElementById('editProfileForm');
                         if (editProfileForm && typeof handleProfileUpdate === 'function') {
-                            // Check if listener already exists to prevent duplicates
                             if (!editProfileForm.hasAttribute('data-listener-attached')) {
-                                console.log("Attaching submit listener to editProfileForm from script.js"); // Debug log
                                 editProfileForm.addEventListener('submit', handleProfileUpdate);
                                 editProfileForm.setAttribute('data-listener-attached', 'true');
                             }
-                        } else if (section === 'profile') { // More specific check
-                            if (!editProfileForm) {
-                                console.warn('editProfileForm not found in DOM when script.js tried to attach listener.');
-                            }
-                            if (typeof handleProfileUpdate !== 'function') {
-                                console.warn('handleProfileUpdate function not found when script.js tried to attach listener.');
-                            }
                         }
-                    }
+                    }  
                 });
-            } else {
-                console.error('#content element became null before setting innerHTML!');
+            } catch (error) {
+                console.error(`Error during fetch or processing for ${section}:`, error);
+                if (contentDiv) {
+                    contentDiv.innerHTML = `<p>Failed to load content. Please try again later.</p>`;
+                }
             }
-        })
-        .catch(error => {
-            console.error(`Error during fetch or processing for ${section}:`, error);
-            if (contentDiv) {
-                contentDiv.innerHTML = `<p>Failed to load content. Please try again later.</p>`;
-            }
-        });
 }
 
 function isAuthenticated() {
@@ -109,6 +98,25 @@ function isAuthenticated() {
         return response.json().then(data => data.loggedIn);
     })
     .catch(() => false); 
+}
+
+async function getCurrentUserId() {
+    try {
+        const response = await fetch('/api/auth/status', {
+            method: 'GET',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        return data.loggedIn ? data.userId.toString() : null;
+    } catch (error) {
+        console.error('Error fetching current user:', error);
+        return null;
+    }
 }
 
 function isProtectedSection(section) {

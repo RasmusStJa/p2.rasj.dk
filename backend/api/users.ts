@@ -75,6 +75,51 @@ router.get('/me', isAuthenticated, async (req: Request, res: Response) => {
     }
 });
 
+router.get('/users/:id', async (req, res) => {
+    if (!dbPool) {
+        return res.status(503).json({ message: 'Database service not available.' });
+    }
+    let userId = parseInt(req.params.id, 10);
+        if (isNaN(userId)) {
+            userId = req.session?.userId ?? NaN;
+        }
+        if (!userId || isNaN(userId)) {
+            return res.status(400).json({ message: 'Invalid or missing user ID.' });
+        }
+
+    try {
+        const sql = `
+            SELECT
+                u.user_id,
+                u.username,
+                u.email,
+                u.role,
+                u.created_at,
+                up.display_name AS displayName,
+                up.program,
+                up.bio
+            FROM
+                users u
+            LEFT JOIN
+                user_profiles up ON u.user_id = up.user_id
+            WHERE
+                u.user_id = ?
+        `;
+        const [rows]: [RowDataPacket[], FieldPacket[]] = await dbPool.query<RowDataPacket[]>(sql, [userId]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+       
+        const userProfile: UserProfile = rows[0] as UserProfile;
+        res.json(userProfile);
+
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ message: 'Failed to retrieve user profile.' });
+    }
+});
+
 // PUT /api/users/me - Update current authenticated user's profile
 router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
     console.log('--- PUT /api/users/me route handler ENTERED ---');
