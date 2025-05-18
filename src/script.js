@@ -54,19 +54,15 @@ async function loadContent(section) {
           } else if (section === 'feed') {
               loadFeed();
           } else if (section.startsWith('profile')) {
-              const profileUserId = id || await getCurrentUserId();
-                        
-              if (profileUserId === await getCurrentUserId()) {
-                  loadUserProfile();
-              } else {
-                  loadPublicProfile(profileUserId);
-              }
-
-              const editProfileForm = document.getElementById('editProfileForm');
-              if (editProfileForm && typeof handleProfileUpdate === 'function') {
-                  if (!editProfileForm.hasAttribute('data-listener-attached')) {
-                      editProfileForm.addEventListener('submit', handleProfileUpdate);
-                      editProfileForm.setAttribute('data-listener-attached', 'true');
+              const profileUserId = id || 'me';
+              loadProfile(profileUserId);
+              if (id === 'me') {
+                  const editProfileForm = document.getElementById('editProfileForm');
+                  if (editProfileForm && typeof handleProfileUpdate === 'function') {
+                      if (!editProfileForm.hasAttribute('data-listener-attached')) {
+                          editProfileForm.addEventListener('submit', handleProfileUpdate);
+                          editProfileForm.setAttribute('data-listener-attached', 'true');
+                      }
                   }
               }
           }  
