@@ -53,8 +53,6 @@ async function loadContent(section) {
               attachSignupListener();
           } else if (section === 'feed') {
               loadFeed();
-          } else if (section === 'PublicProfile') {
-              loadPublicProfile();
           } else if (section.startsWith('profile')) {
               const profileUserId = id || await getCurrentUserId();
                         
