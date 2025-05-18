@@ -33,59 +33,22 @@ initializeDbPool().then(pool => {
 });
 
 // --- API Endpoints ---
-
-// GET /api/users/me - Get current authenticated user's profile
-router.get('/me', isAuthenticated, async (req: Request, res: Response) => {
+router.get('/:id?', async (req, res) => {
     if (!dbPool) {
         return res.status(503).json({ message: 'Database service not available.' });
     }
-    const userId = req.session.userId;
-
-    try {
-        const sql = `
-            SELECT
-                u.user_id,
-                u.username,
-                u.email,
-                u.role,
-                u.created_at,
-                up.display_name AS displayName,
-                up.program,
-                up.bio
-            FROM
-                users u
-            LEFT JOIN
-                user_profiles up ON u.user_id = up.user_id
-            WHERE
-                u.user_id = ?
-        `;
-        const [rows]: [RowDataPacket[], FieldPacket[]] = await dbPool.query<RowDataPacket[]>(sql, [userId]);
-
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'User not found.' });
+    let userId: number | undefined;
+    if (req.params.id === undefined || req.params.id === 'me') {
+        if (!req.session?.userId) {
+            return res.status(401).json({ message: 'Unauthorized: Please log in.' });
         }
-        // The query returns RowDataPacket, cast it to UserProfile
-        // Note: SQL returns 'display_name', we aliased it to 'displayName' for consistency
-        const userProfile: UserProfile = rows[0] as UserProfile;
-        res.json(userProfile);
-
-    } catch (error) {
-        console.error('Error fetching user profile:', error);
-        res.status(500).json({ message: 'Failed to retrieve user profile.' });
-    }
-});
-
-router.get('/:id', async (req, res) => {
-    if (!dbPool) {
-        return res.status(503).json({ message: 'Database service not available.' });
-    }
-    let userId = parseInt(req.params.id, 10);
+        userId = req.session.userId;
+    } else {
+        userId = parseInt(req.params.id, 10);
         if (isNaN(userId)) {
-            userId = req.session?.userId ?? NaN;
+            return res.status(400).json({ message: 'Invalid user ID.' });
         }
-        if (!userId || isNaN(userId)) {
-            return res.status(400).json({ message: 'Invalid or missing user ID.' });
-        }
+    }
 
     try {
         const sql = `
