@@ -23,7 +23,8 @@
             </ul>
           </div>
       
-          <button class="follow-btn" onclick="toggleFollow(this)">+ Follow</button>
+          <button id="followBtn" class="follow-btn" onclick="toggleFollow(this)">+ Follow</button>
+          <button id="editBtn" onclick="openEditProfileModal()">Edit Profile</button>
         </div>
       </div>
       
@@ -41,7 +42,6 @@
 <div id="userProfile">
     <h2>My Profile</h2>
     <p><strong>Display Name:</strong> <span id="profileDisplayName"></span></p>
-    <button onclick="openEditProfileModal()">Edit Profile</button>
 </div>
 
 <!-- Edit Profile Modal (adapting your existing modal structure) -->
