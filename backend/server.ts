@@ -14,7 +14,6 @@ import feedRouter from './feed/feed';
 import postRouter from './post/post.routes'; // Import the new post router
 import followsRouter from './follows/follows';
 import userRouter from './api/users'; // Adjust path as needed
-import publicProfileRouter from './api/publicProfile';
 
 // Import and configure database connection
 import initializeDbPool from './db';
@@ -104,13 +103,10 @@ app.use('/api/feed', feedRouter);   // Feed routes will be under /api/feed
 app.use('/api/posts', postRouter);  // Mount the post router
 app.use('/api/follows', followsRouter);
 app.use('/api/users', userRouter); // Mount the new user routes
-app.use('/api/publicProfile', publicProfileRouter);
 
 
-// --- Error Handling (Basic Example) ---
-// Add more specific error handling middleware as needed
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error(err.stack);
+  console.error(err.stack);
     res.status(500).send('Something broke!');
 });
 

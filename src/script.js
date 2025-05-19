@@ -1,5 +1,6 @@
 async function loadContent(section) {
-    console.log("loadContent CALLED with section:", section);
+    const [base, id] = section.split('/');
+    const filePath = `/public/${base}.html`;
     const contentDiv = document.getElementById('content');
     const links = document.querySelectorAll('.topnav a');
 
@@ -12,16 +13,14 @@ async function loadContent(section) {
 
     if (links && links.length > 0) {
         links.forEach(link => link.classList.remove('active'));
-        const activeLink = document.querySelector(`.topnav a[href="#${section}"]`);
+        const activeLink = document.querySelector(`.topnav a[href="#${base}"]`);
         if (activeLink) {
             activeLink.classList.add('active');
         }
     }
 
-    const filePath = `/public/${section}.html`;
-
     // Section requires authentication
-    if (isProtectedSection(section)) {
+    if (isProtectedSection(base)) {
         const authenticated = await isAuthenticated();
         if (!authenticated) {
             console.warn('Attempted to access a protected section while not authenticated. Redirecting to login.');
@@ -30,71 +29,42 @@ async function loadContent(section) {
         }
     }
     
-    if (await isAuthenticated() && (section === 'login' || section === 'signup')) {
+     if ((base === 'login' || base === 'signup') && await isAuthenticated()) {
         console.warn('Attempted to access login/signup while authenticated. Redirecting to home.');
         window.location.href = '/#home';  
         return;
     }
 
-    fetch(filePath)
-        .then(response => {
-            if (!response.ok) {
-                console.error(`HTTP error! status: ${response.status} for ${filePath}`);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.text();
-        })
-        .then(data => {
-            if (contentDiv) {
-                contentDiv.innerHTML = data;
+      try {
+        const resp = await fetch(filePath);
+        if (!resp.ok) throw new Error(`Failed to load ${filePath}`);
+        const html = await resp.text();
+        contentDiv.innerHTML = html;
+      } catch (err) {
+        console.error(err);
+        contentDiv.innerHTML = `<p>Failed to load content. Please try again later.</p>`;
+        return;
+      }
 
-                // Attach listeners after a short delay to ensure elements are present
-                requestAnimationFrame(() => {
-                    if (section === 'login') {
-                        attachLoginListener();
-                    } else if (section === 'signup') {
-                        attachSignupListener();
-                    } else if (section === 'feed') {
-                        loadFeed();
-                    } else if (section === 'PublicProfile') {
-                        loadPublicProfile();
-                    } else if (section === 'profile') {
-                        // Call loadUserProfile if it's available
-                        if (typeof loadUserProfile === 'function') {
-                            console.log("Calling loadUserProfile from script.js"); // Debug log
-                            loadUserProfile();
-                        } else {
-                            console.error('loadUserProfile function not found from script.js. Ensure profile.js is loaded and accessible.');
-                        }
-                        // Attach event listener to the edit profile form
-                        const editProfileForm = document.getElementById('editProfileForm');
-                        if (editProfileForm && typeof handleProfileUpdate === 'function') {
-                            // Check if listener already exists to prevent duplicates
-                            if (!editProfileForm.hasAttribute('data-listener-attached')) {
-                                console.log("Attaching submit listener to editProfileForm from script.js"); // Debug log
-                                editProfileForm.addEventListener('submit', handleProfileUpdate);
-                                editProfileForm.setAttribute('data-listener-attached', 'true');
-                            }
-                        } else if (section === 'profile') { // More specific check
-                            if (!editProfileForm) {
-                                console.warn('editProfileForm not found in DOM when script.js tried to attach listener.');
-                            }
-                            if (typeof handleProfileUpdate !== 'function') {
-                                console.warn('handleProfileUpdate function not found when script.js tried to attach listener.');
-                            }
-                        }
-                    }
-                });
-            } else {
-                console.error('#content element became null before setting innerHTML!');
-            }
-        })
-        .catch(error => {
-            console.error(`Error during fetch or processing for ${section}:`, error);
-            if (contentDiv) {
-                contentDiv.innerHTML = `<p>Failed to load content. Please try again later.</p>`;
-            }
-        });
+      requestAnimationFrame(async () => {
+          if (section === 'login') {
+              attachLoginListener();
+          } else if (section === 'signup') {
+              attachSignupListener();
+          } else if (section === 'feed') {
+              loadFeed();
+          } else if (section.startsWith('profile')) {
+              const profileUserId = id || 'me';
+              loadProfile(profileUserId);
+                  const editProfileForm = document.getElementById('editProfileForm');
+                  if (editProfileForm && typeof handleProfileUpdate === 'function') {
+                      if (!editProfileForm.hasAttribute('data-listener-attached')) {
+                          editProfileForm.addEventListener('submit', handleProfileUpdate);
+                          editProfileForm.setAttribute('data-listener-attached', 'true');
+                      }
+                  }
+          }  
+      });
 }
 
 function isAuthenticated() {
@@ -111,9 +81,27 @@ function isAuthenticated() {
     .catch(() => false); 
 }
 
-function isProtectedSection(section) {
-    const protectedSections = ['feed', 'profile'];
-    return protectedSections.includes(section);
+async function getCurrentUserId() {
+    try {
+        const response = await fetch('/api/auth/status', {
+            method: 'GET',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const data = await response.json();
+        return data.loggedIn ? data.userId.toString() : null;
+    } catch (error) {
+        console.error('Error fetching current user:', error);
+        return null;
+    }
+}
+
+function isProtectedSection(base) {
+  return ['feed', 'profile'].includes(base);
 }
 
 function loadContentFromLogo() {

@@ -268,7 +268,7 @@ form button {
     text-decoration: underline;
   }
   
-  .follow-btn {
+  .follow-btn, .edit-Btn {
     margin-top: 12px;
     padding: 8px 16px;
     border: none;

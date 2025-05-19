@@ -33,13 +33,22 @@ initializeDbPool().then(pool => {
 });
 
 // --- API Endpoints ---
-
-// GET /api/users/me - Get current authenticated user's profile
-router.get('/me', isAuthenticated, async (req: Request, res: Response) => {
+router.get('/:id', async (req, res) => {
     if (!dbPool) {
         return res.status(503).json({ message: 'Database service not available.' });
     }
-    const userId = req.session.userId;
+    let userId: number | undefined;
+    if (req.params.id === undefined || req.params.id === 'me') {
+        if (!req.session?.userId) {
+            return res.status(401).json({ message: 'Unauthorized: Please log in.' });
+        }
+        userId = req.session.userId;
+    } else {
+        userId = parseInt(req.params.id, 10);
+        if (isNaN(userId)) {
+            return res.status(400).json({ message: 'Invalid user ID.' });
+        }
+    }
 
     try {
         const sql = `
@@ -64,8 +73,7 @@ router.get('/me', isAuthenticated, async (req: Request, res: Response) => {
         if (rows.length === 0) {
             return res.status(404).json({ message: 'User not found.' });
         }
-        // The query returns RowDataPacket, cast it to UserProfile
-        // Note: SQL returns 'display_name', we aliased it to 'displayName' for consistency
+       
         const userProfile: UserProfile = rows[0] as UserProfile;
         res.json(userProfile);
 
