@@ -129,7 +129,7 @@ async function handleProfileUpdate(event) {
         const updatedUserData = await response.json();
 
         // Update the profile display on the page
-        document.getElementById('profileDisplayName').textContent = updatedUserData.displayName || 'N/A';
+        document.getElementById('profileUsername').textContent = updatedUserData.displayName || userData.username || 'N/A';
         document.getElementById('profileBio').textContent = updatedUserData.bio || 'N/A';
         
         // Optionally update other fields if returned
