@@ -56,7 +56,6 @@ async function loadContent(section) {
           } else if (section.startsWith('profile')) {
               const profileUserId = id || 'me';
               loadProfile(profileUserId);
-              if (id === 'me') {
                   const editProfileForm = document.getElementById('editProfileForm');
                   if (editProfileForm && typeof handleProfileUpdate === 'function') {
                       if (!editProfileForm.hasAttribute('data-listener-attached')) {
@@ -64,7 +63,6 @@ async function loadContent(section) {
                           editProfileForm.setAttribute('data-listener-attached', 'true');
                       }
                   }
-              }
           }  
       });
 }
