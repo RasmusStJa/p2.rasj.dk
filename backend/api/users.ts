@@ -33,7 +33,7 @@ initializeDbPool().then(pool => {
 });
 
 // --- API Endpoints ---
-router.get('/:id?', async (req, res) => {
+router.get('/:id', async (req, res) => {
     if (!dbPool) {
         return res.status(503).json({ message: 'Database service not available.' });
     }
