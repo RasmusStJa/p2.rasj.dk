@@ -4,6 +4,12 @@
         <form id="signupForm">
             <input type="email" id="email" placeholder="Email" required><br>
             <input type="password" id="password" placeholder="Password" required><br>
+            <div class="terms-checkbox">
+                <input type="checkbox" id="termsCheckbox" required>
+                <label for="termsCheckbox">
+                    I accept the <a href="#terms" onclick="loadContent('terms')" class="terms-link">Terms and Conditions</a>
+                </label>
+            </div>
             <button type="submit" id="signupBtn">Sign Up</button>
         </form>
         <div id="messageArea" class="message" style="display: none;"></div>
