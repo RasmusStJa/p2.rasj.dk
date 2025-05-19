@@ -55,17 +55,17 @@ async function loadProfile(id) {
 
         const userData = await response.json();
 
-        // Populate profile display
         const profileUsernameEl = document.getElementById('profileUsername');
-        if (profileUsernameEl) profileUsernameEl.textContent = userData.username || 'N/A';
-
         const profileDisplayNameEl = document.getElementById('profileDisplayName');
-        if (profileDisplayNameEl) profileDisplayNameEl.textContent = userData.displayName || 'N/A';
-
         const profileEmailEl = document.getElementById('profileEmail');
-        if (profileEmailEl) profileEmailEl.textContent = userData.email || 'N/A';
-
         const profileBioEl = document.getElementById('profileBio');
+        const followBtn = document.getElementById('followBtn');
+        const editBtn = document.getElementById('editBtn');
+
+        // Populate profile display
+        if (profileUsernameEl) profileUsernameEl.textContent = userData.username || 'N/A';
+        if (profileDisplayNameEl) profileDisplayNameEl.textContent = userData.displayName || 'N/A';
+        if (profileEmailEl) profileEmailEl.textContent = userData.email || 'N/A';
         if (profileBioEl) profileBioEl.textContent = userData.bio || 'N/A';
 
         // If it's your own profile, pre-fill the edit form
@@ -75,6 +75,12 @@ async function loadProfile(id) {
 
             if (editDisplayName) editDisplayName.value = userData.displayName || '';
             if (editBio) editBio.value = userData.bio || '';
+
+            followBtn.style.display = 'none';
+            editBtn.style.display = 'inline';
+        } else {
+            followBtn.style.display = 'inline';
+            editBtn.style.display = 'none';
         }
 
     } catch (error) {
