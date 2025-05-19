@@ -3,11 +3,11 @@
         <span class="role-badge">Student</span>
       
         <div class="card-body">
-          <h2 class="name">Example Name</h2>
+          <h2 class="name" id="profileUsername">Example Name</h2>
           <p class="program">Computer Science @ AAU</p>
-          <p class="bio">Passionate about Coding and collaboration.</p>
+          <p class="bio" id="profileBio">Example Bio.</p>
       
-          <p class="email"><i class="fa-solid fa-envelope"></i> example@student.aau.dk</p>
+          <p class="email"><i class="fa-solid fa-envelope"></i> <span id="profileEmail"></span></p>
       
           <div class="tags">
             <span class="tag">#P2</span>
@@ -40,10 +40,7 @@
 <!-- Profile Display Area -->
 <div id="userProfile">
     <h2>My Profile</h2>
-    <p><strong>Username:</strong> <span id="profileUsername"></span></p>
     <p><strong>Display Name:</strong> <span id="profileDisplayName"></span></p>
-    <p><strong>Email:</strong> <span id="profileEmail"></span></p>
-    <p><strong>Bio:</strong> <span id="profileBio"></span></p>
     <button onclick="openEditProfileModal()">Edit Profile</button>
 </div>
 
