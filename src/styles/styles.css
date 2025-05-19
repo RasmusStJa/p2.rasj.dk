@@ -572,3 +572,31 @@ form button {
 .post-form button:hover {
     background-color: #45a049;
 }
+/* Terms and Conditions */
+.terms-checkbox {
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.terms-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.terms-checkbox label {
+    font-size: 14px;
+    color: var(--text-color);
+}
+
+.terms-link {
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.terms-link:hover {
+    color: var(--primary-color-hover);
+}
