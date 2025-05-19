@@ -56,15 +56,13 @@ async function loadProfile(id) {
         const userData = await response.json();
 
         const profileUsernameEl = document.getElementById('profileUsername');
-        const profileDisplayNameEl = document.getElementById('profileDisplayName');
         const profileEmailEl = document.getElementById('profileEmail');
         const profileBioEl = document.getElementById('profileBio');
         const followBtn = document.getElementById('followBtn');
         const editBtn = document.getElementById('editBtn');
 
         // Populate profile display
-        if (profileUsernameEl) profileUsernameEl.textContent = userData.username || 'N/A';
-        if (profileDisplayNameEl) profileDisplayNameEl.textContent = userData.displayName || 'N/A';
+        if (profileUsernameEl) profileUsernameEl.textContent = userData.displayName || userData.username || 'N/A';
         if (profileEmailEl) profileEmailEl.textContent = userData.email || 'N/A';
         if (profileBioEl) profileBioEl.textContent = userData.bio || 'N/A';
 
