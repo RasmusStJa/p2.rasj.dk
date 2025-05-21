@@ -60,6 +60,7 @@ async function loadProfile(id) {
         const profileBioEl = document.getElementById('profileBio');
         const followBtn = document.getElementById('followBtn');
         const editBtn = document.getElementById('editBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
 
         // Populate profile display
         if (profileUsernameEl) profileUsernameEl.textContent = userData.displayName || userData.username || 'N/A';
@@ -76,9 +77,11 @@ async function loadProfile(id) {
 
             followBtn.style.display = 'none';
             editBtn.style.display = 'inline';
+            deleteBtn.style.display = 'inline';
         } else {
             followBtn.style.display = 'inline';
             editBtn.style.display = 'none';
+            deleteBtn.style.display = 'none';
         }
 
     } catch (error) {
