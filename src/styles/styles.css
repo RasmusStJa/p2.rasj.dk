@@ -278,7 +278,7 @@ form button {
     transition: background-color 0.3s ease;
   }
 
-  .alert-btnn {
+  .alert-btn {
     background-color: var(--alert-btn);
   }
 
