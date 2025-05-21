@@ -146,6 +146,32 @@ async function handleProfileUpdate(event) {
     }
 }
 
+function DeleteProfile() {
+    const confirmDelete = confirm("⚠️ Are you sure you want to permanently delete your profile and all related data? This action cannot be undone.");
+
+    if (!confirmDelete) return;
+
+    fetch('/api/delete', {
+        method: 'POST',
+        credentials: 'include'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Failed to delete profile: ${response.statusText}`);
+        }
+        return response.json(); // optional if your endpoint sends JSON
+    })
+    .then(() => {
+        alert("Your profile has been deleted.");
+        window.location.href = '/'; // Redirect to home or login
+    })
+    .catch(error => {
+        console.error("Error deleting profile:", error);
+        alert("An error occurred while deleting your profile.");
+    });
+}
+
+
 // --- Event Listeners ---
 
 // ENSURE THIS ENTIRE BLOCK IS COMMENTED OUT OR REMOVED:
