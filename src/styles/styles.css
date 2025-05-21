@@ -268,7 +268,7 @@ form button {
     text-decoration: underline;
   }
   
-  .follow-btn, .edit-Btn {
+  .profile-btn {
     margin-top: 12px;
     padding: 8px 16px;
     border: none;
@@ -277,6 +277,15 @@ form button {
     color: var(--btn-text);
     cursor: pointer;
     transition: background-color 0.3s ease;
+    color: var(--btn-text);
+  }
+
+  .alert-btnn {
+    background-color: var(--alert-btn);
+  }
+
+  .follow-btn, .edit-Btn {
+    background-color: var(--btn-bg);
   }
   
   .follow-btn.following {
