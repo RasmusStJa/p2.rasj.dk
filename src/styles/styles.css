@@ -273,11 +273,9 @@ form button {
     padding: 8px 16px;
     border: none;
     border-radius: 6px;
-    background-color: var(--btn-bg);
     color: var(--btn-text);
     cursor: pointer;
     transition: background-color 0.3s ease;
-    color: var(--btn-text);
   }
 
   .alert-btnn {
