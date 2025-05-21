@@ -11,13 +11,15 @@ declare module 'express-session' {
 
 const router: Router = express.Router();
 
-router.post('/', (async (req: Request, res: Response) => {
-    const userId = req.session.userId;
-
-    if (!userId) {
-        return res.status(401).json({ message: 'Not authenticated' });
+const isAuthenticated: RequestHandler = (req, res, next) => {
+    if (req.session?.userId) {
+        return next();
     }
+    res.status(401).json({ message: 'Unauthorized: Please log in.' });
+};
 
+router.post('/', isAuthenticated, async (req: Request, res: Response) => {
+    const userId = req.session.userId!;
     const db = await initializeDbPool();
     const connection = await db.getConnection();
     
@@ -66,6 +68,6 @@ router.post('/', (async (req: Request, res: Response) => {
     } finally {
         connection.release();
     }
-}) as RequestHandler);
+});
 
 export default router;
