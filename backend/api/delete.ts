@@ -64,7 +64,7 @@ router.post('/', isAuthenticated, async (req: Request, res: Response) => {
     } catch (error) {
         await connection.rollback();
         console.error('Delete error:', error);
-        res.status(500).json({ message: 'Error deleting user account' });
+        res.status(500).json({ message: `Error deleting user account: ${error instanceof Error ? error.message : 'Unknown error'}` });
     } finally {
         connection.release();
     }
