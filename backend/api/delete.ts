@@ -47,10 +47,13 @@ router.post('/', isAuthenticated, async (req: Request, res: Response) => {
         // Step 6: Delete from friends (both sides of the relationship)
         await connection.query('DELETE FROM friends WHERE user_id = ? OR friend_id = ?', [userId, userId]);
 
-        // Step 7: Delete the user's profile if it exists
+        // Step 7: Delete post reactions made by the user
+        await connection.query('DELETE FROM post_reactions WHERE user_id = ?', [userId]);
+
+        // Step 8: Delete the user's profile if it exists
         await connection.query('DELETE FROM user_profiles WHERE user_id = ?', [userId]);
 
-        // Step 8: Delete the user
+        // Step 9: Delete the user
         await connection.query('DELETE FROM users WHERE user_id = ?', [userId]);
 
         await connection.commit();
