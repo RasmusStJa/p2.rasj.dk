@@ -17,17 +17,15 @@
 
       <div class="icons-container">
       <div class="notification-wrapper" id="notificationWrapper">
-        <i class="fa-solid fa-bell notification-icon" id="notificationBell"></i>
+        <i class="fa-solid fa-bell notification-icon" id="notificationBell">
+          <span id="notificationCount" class="notification-count hidden"></span>
+        </i>
         <div class="notification-dropdown hidden" id="notificationDropdown">
           <div class="arrow-up"></div>
-          <p>No new notifications</p>
+          <div id="friendRequestsContainer">
+            <p>No new notifications</p>
+          </div>
 
-          <form id="friendResponseForm">
-            <input type="hidden" name="senderId" value="123">
-            <button type="submit" value="accept">Accept</button>
-            <button type="submit" value="reject">Reject</button>
-        </form>
-        
         </div>
       </div>
 
