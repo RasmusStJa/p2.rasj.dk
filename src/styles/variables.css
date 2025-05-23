@@ -9,7 +9,8 @@
     --btn-bg: #4CAF50;
     --alert-btn: #e53935;
     --btn-text: #fff;
-    --btn-following: #d9534f;
+    --btn-pending: #FFC107;
+    --btn-friend: #4CAF50;
     --form-bg: #ffffff;
     --shadow: rgba(0, 0, 0, 0.08);
     --badge-bg: #4CAF50;
@@ -34,7 +35,8 @@
     --btn-bg: #6aaf6a;
     --alert-btn: #f44336; 
     --btn-text: #fff;
-    --btn-following: #b84c4c;
+    --btn-pending: #FFA000; 
+    --btn-friend: #388E3C;  
     --form-bg: #3b3b3b;
     --shadow: rgba(255, 255, 255, 0.05);
     --badge-bg: #6aaf6a;
