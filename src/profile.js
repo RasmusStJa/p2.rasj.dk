@@ -145,6 +145,7 @@ async function loadProfile(id) {
             followBtn.style.display = 'inline';
             editBtn.style.display = 'none';
             deleteBtn.style.display = 'none';
+            updateFriendButton(followBtn, id);
         }
 
     } catch (error) {
@@ -235,6 +236,27 @@ function DeleteProfile() {
         console.error("Error deleting profile:", error);
         alert("An error occurred while deleting your profile.");
     });
+}
+
+async function updateFriendButton(button, targetUserId) {
+  const resp = await fetch(`/api/friends/status/${targetUserId}`, {
+    credentials: 'include'
+  });
+  if (!resp.ok) {
+    console.warn('Could not get friendship status');
+    return;
+  }
+  const { status } = await resp.json();
+  button.classList.remove('pending', 'friend');
+  if (status === 'none' || status === 'rejected') {
+    button.textContent = '+ Add Friend';
+  } else if (status === 'pending') {
+    button.textContent = 'Pending (Cancel)';
+    button.classList.add('pending');
+  } else if (status === 'accepted') {
+    button.textContent = '- Remove Friend';
+    button.classList.add('friend');
+  }
 }
 
 
