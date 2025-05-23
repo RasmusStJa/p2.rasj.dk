@@ -164,10 +164,10 @@ router.get('/requests', isAuthenticated, async (req: Request, res: Response) => 
             `
             SELECT
             f.user_id   AS senderId,
-            u.username AS displayName,
+            u.username   AS displayName,
             f.created_at
             FROM friends f
-            JOIN users up ON f.user_id = u.user_id
+            JOIN users u ON f.user_id = u.user_id
             WHERE f.friend_id = ? AND f.status = 'pending'
             `,
             [currentUserId]
