@@ -109,7 +109,7 @@ async function fetchFriendRequests() {
       credentials: 'include',
     });
 
-    if (resp.status === 401) {
+    if (response.status === 401) {
       // not logged in
       document.getElementById('notificationCount').classList.add('hidden');
       return;
