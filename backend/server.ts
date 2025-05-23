@@ -15,6 +15,7 @@ import postRouter from './post/post.routes'; // Import the new post router
 import followsRouter from './follows/follows';
 import userRouter from './api/users'; 
 import deleteRouter from './api/delete'; 
+import friendRouter from './api/friends'; 
 
 // Import and configure database connection
 import initializeDbPool from './db';
@@ -105,6 +106,7 @@ app.use('/api/posts', postRouter);  // Mount the post router
 app.use('/api/follows', followsRouter);
 app.use('/api/users', userRouter); // Mount the new user routes
 app.use('/api/delete', deleteRouter); 
+app.use('/api/friends', friendRouter); 
 
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
