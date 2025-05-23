@@ -282,15 +282,15 @@ form button {
     background-color: var(--alert-btn);
   }
 
-  .friend, .edit-Btn {
+  .friend-btn, .edit-Btn {
     background-color: var(--btn-bg);
   }
   
-  .friend.pending {
+  .friend-btn.pending {
     background-color: var(--btn-pending);
   }
 
-  .friend.friend {
+  .friend-btn.friend {
     background-color: var(--btn-friend);
   }
   
