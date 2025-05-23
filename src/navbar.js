@@ -100,3 +100,20 @@ async function logout() {
     checkLoginStatus();  // Refresh login status
   }
 }
+
+
+document.getElementById('friendResponseForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const senderId = this.querySelector('input[name="senderId"]').value;
+  const action = e.submitter.value; // the clicked button value
+
+  const response = await fetch('/api/friends/answer', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ senderId, action })
+  });
+
+  const data = await response.json();
+  alert(data.message);
+});

@@ -11,15 +11,76 @@ function closeModal(modalId) {
     }
 }
     
-function toggleFollow(button) {
-    if (button.classList.contains('following')) {
-      button.classList.remove('following');
-      button.textContent = '+ Follow';
-    } else {
-      button.classList.add('following');
-      button.textContent = '- Follow';
+async function friends(button) {
+    const currentUserId = 'me'
+    const profileUrl = new URL(window.location.href);
+    const pathSegments = profileUrl.pathname.split('/');
+    const targetUserId = pathSegments[pathSegments.length - 1];
+
+     try {
+        // Step 1: Check friendship status
+        const response = await fetch(`/api/friends/status/${targetUserId}`, {
+            credentials: 'include'
+        });
+
+        if (!response.ok) throw new Error("Failed to check friendship status");
+
+        const { status } = await response.json();
+
+        // Step 2: Handle logic
+        if (status === 'none' || status === 'rejected') {
+            // Send friend request
+            const sendRes = await fetch(`/api/friends/request`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ friendId: targetUserId })
+            });
+
+            if (!sendRes.ok) throw new Error("Failed to send friend request");
+
+            button.textContent = 'Pending (Cancel)';
+            button.classList.add('pending');
+            button.classList.remove('friend');
+        }
+        else if (status === 'pending') {
+            // Cancel (delete) request
+            const cancelRes = await fetch(`/api/friends/delete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ friendId: targetUserId })
+            });
+
+            if (!cancelRes.ok) throw new Error("Failed to cancel request");
+
+            button.textContent = '+ Add Friend';
+            button.classList.remove('pending', 'friend');
+        }
+        else if (status === 'accepted') {
+            // Remove friend
+            const confirmDelete = confirm("Are you sure you want to remove this friend?");
+            if (!confirmDelete) return;
+
+            const deleteRes = await fetch(`/api/friends/delete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ friendId: targetUserId })
+            });
+
+            if (!deleteRes.ok) throw new Error("Failed to delete friend");
+
+            button.textContent = '+ Add Friend';
+            button.classList.remove('friend');
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Error handling friend request.");
     }
-  }
+}
+
   
 // --- New Profile View and Edit Functions ---
 
