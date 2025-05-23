@@ -12,12 +12,16 @@ function closeModal(modalId) {
 }
     
 async function friends(button) {
-    const currentUserId = 'me'
-    const profileUrl = new URL(window.location.href);
-    const pathSegments = profileUrl.pathname.split('/');
-    const targetUserId = pathSegments[pathSegments.length - 1];
+    const hash = window.location.hash; 
+    const match = hash.match(/\/(\d+)$/);
+    const targetUserId = match ? match[1] : null;
 
-     try {
+    if (!targetUserId) {
+        console.error("No target user ID found in URL.");
+        return;
+    }
+
+    try {
         // Step 1: Check friendship status
         const response = await fetch(`/api/friends/status/${targetUserId}`, {
             credentials: 'include'
@@ -27,7 +31,7 @@ async function friends(button) {
 
         const { status } = await response.json();
 
-        // Step 2: Handle logic
+        // Step 2: Handle each status case
         if (status === 'none' || status === 'rejected') {
             // Send friend request
             const sendRes = await fetch(`/api/friends/request`, {
@@ -42,9 +46,8 @@ async function friends(button) {
             button.textContent = 'Pending (Cancel)';
             button.classList.add('pending');
             button.classList.remove('friend');
-        }
-        else if (status === 'pending') {
-            // Cancel (delete) request
+        } else if (status === 'pending') {
+            // Cancel pending request
             const cancelRes = await fetch(`/api/friends/delete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -56,9 +59,8 @@ async function friends(button) {
 
             button.textContent = '+ Add Friend';
             button.classList.remove('pending', 'friend');
-        }
-        else if (status === 'accepted') {
-            // Remove friend
+        } else if (status === 'accepted') {
+            // Confirm and remove friend
             const confirmDelete = confirm("Are you sure you want to remove this friend?");
             if (!confirmDelete) return;
 
@@ -76,7 +78,7 @@ async function friends(button) {
         }
 
     } catch (err) {
-        console.error(err);
+        console.error("Friendship handling error:", err);
         alert("Error handling friend request.");
     }
 }
