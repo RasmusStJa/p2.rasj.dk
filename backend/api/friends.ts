@@ -161,10 +161,15 @@ router.get('/requests', isAuthenticated, async (req: Request, res: Response) => 
 
     try {
         const [rows] = await dbPool.query(
-            `SELECT f.id, u.displayName, u.id AS senderId
-             FROM friends f
-             JOIN users u ON f.user_id = u.id
-             WHERE f.friend_id = ? AND f.status = 'pending'`,
+            `
+            SELECT
+            f.user_id   AS senderId,
+            up.display_name AS displayName,
+            f.created_at
+            FROM friends f
+            JOIN user_profiles up ON f.user_id = up.user_id
+            WHERE f.friend_id = ? AND f.status = 'pending'
+            `,
             [currentUserId]
         ) as any;
 
@@ -174,6 +179,7 @@ router.get('/requests', isAuthenticated, async (req: Request, res: Response) => 
         res.status(500).json({ error: "Failed to fetch friend requests." });
     }
 });
+
 
 
 export default router;
