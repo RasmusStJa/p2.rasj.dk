@@ -109,6 +109,12 @@ async function fetchFriendRequests() {
       credentials: 'include',
     });
 
+    if (resp.status === 401) {
+      // not logged in
+      document.getElementById('notificationCount').classList.add('hidden');
+      return;
+    }
+
     if (!response.ok) throw new Error('Failed to fetch friend requests');
 
     const data = await response.json();
