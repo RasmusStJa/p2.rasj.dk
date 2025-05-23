@@ -112,7 +112,7 @@ router.post('/answer', isAuthenticated, async (req: Request, res: Response) => {
 
 router.get('/status/:targetUserId', isAuthenticated, async (req: Request, res: Response) => {
     const currentUserId = req.session.userId;
-    const targetUserId = parseInt(req.params.targetUserId);
+    const targetUserId = parseInt(req.params.targetUserId, 10);
 
     if (!targetUserId || currentUserId === targetUserId) {
         return res.json({ status: 'none' });
