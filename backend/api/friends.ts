@@ -164,7 +164,7 @@ router.get('/requests', isAuthenticated, async (req: Request, res: Response) => 
             `
             SELECT
             f.user_id   AS senderId,
-            u.username   AS displayName,
+            u.username   AS senderName,
             f.created_at
             FROM friends f
             JOIN users u ON f.user_id = u.user_id
