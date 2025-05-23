@@ -143,7 +143,7 @@ async function fetchFriendRequests() {
       requestDiv.classList.add('friend-request');
 
       const nameP = document.createElement('p');
-      nameP.textContent = `${req.displayName} sent you a friend request.`;
+      nameP.textContent = `${req.senderName} sent you a friend request.`;
 
       const acceptBtn = document.createElement('button');
       acceptBtn.textContent = 'Accept';
