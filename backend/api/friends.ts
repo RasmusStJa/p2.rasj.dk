@@ -156,5 +156,24 @@ router.post('/delete', isAuthenticated, async (req: Request, res: Response) => {
     }
 });
 
+router.get('/requests', isAuthenticated, async (req: Request, res: Response) => {
+    const currentUserId = req.session.userId;
+
+    try {
+        const [rows] = await dbPool.query(
+            `SELECT f.id, u.displayName, u.id AS senderId
+             FROM friends f
+             JOIN users u ON f.user_id = u.id
+             WHERE f.friend_id = ? AND f.status = 'pending'`,
+            [currentUserId]
+        ) as any;
+
+        res.json({ requests: rows });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch friend requests." });
+    }
+});
+
 
 export default router;
