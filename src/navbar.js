@@ -5,7 +5,9 @@ fetch('/src/navbar.html')
 
     requestAnimationFrame(() => {
       
-      checkLoginStatus(); 
+      checkLoginStatus();
+      fetchFriendRequests();
+      setInterval(fetchFriendRequests, 60000);  
       
       const toggleBtn = document.getElementById('modeToggle');
       if (!toggleBtn) return console.warn('modeToggle not found');
@@ -101,19 +103,79 @@ async function logout() {
   }
 }
 
+async function fetchFriendRequests() {
+  try {
+    const response = await fetch('/api/friends/requests', {
+      credentials: 'include',
+    });
 
-document.getElementById('friendResponseForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const senderId = this.querySelector('input[name="senderId"]').value;
-  const action = e.submitter.value; // the clicked button value
+    if (!response.ok) throw new Error('Failed to fetch friend requests');
 
-  const response = await fetch('/api/friends/answer', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify({ senderId, action })
-  });
+    const data = await response.json();
+    const requests = data.requests;
 
-  const data = await response.json();
-  alert(data.message);
-});
+    const notificationCount = document.getElementById('notificationCount');
+    const friendRequestsContainer = document.getElementById('friendRequestsContainer');
+
+    // Update notification count
+    if (requests.length > 0) {
+      notificationCount.textContent = requests.length;
+      notificationCount.classList.remove('hidden');
+    } else {
+      notificationCount.classList.add('hidden');
+    }
+
+    // Populate friend requests
+    friendRequestsContainer.innerHTML = '';
+    if (requests.length === 0) {
+      friendRequestsContainer.innerHTML = '<p>No new notifications</p>';
+      return;
+    }
+
+    requests.forEach((req) => {
+      const requestDiv = document.createElement('div');
+      requestDiv.classList.add('friend-request');
+
+      const nameP = document.createElement('p');
+      nameP.textContent = `${req.displayName} sent you a friend request.`;
+
+      const acceptBtn = document.createElement('button');
+      acceptBtn.textContent = 'Accept';
+      acceptBtn.addEventListener('click', () => respondToFriendRequest(req.senderId, 'accept'));
+
+      const rejectBtn = document.createElement('button');
+      rejectBtn.textContent = 'Reject';
+      rejectBtn.addEventListener('click', () => respondToFriendRequest(req.senderId, 'reject'));
+
+      requestDiv.appendChild(nameP);
+      requestDiv.appendChild(acceptBtn);
+      requestDiv.appendChild(rejectBtn);
+
+      friendRequestsContainer.appendChild(requestDiv);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function respondToFriendRequest(senderId, action) {
+  try {
+    const response = await fetch('/api/friends/answer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ senderId, action }),
+    });
+
+    if (!response.ok) throw new Error('Failed to respond to friend request');
+
+    const data = await response.json();
+    alert(data.message);
+
+    // Refresh friend requests
+    fetchFriendRequests();
+  } catch (error) {
+    console.error(error);
+    alert('An error occurred while responding to the friend request.');
+  }
+}
