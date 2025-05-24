@@ -141,6 +141,7 @@ async function loadProfile(id) {
             followBtn.style.display = 'none';
             editBtn.style.display = 'inline';
             deleteBtn.style.display = 'inline';
+            attachProfileEventListeners();
         } else {
             followBtn.style.display = 'inline';
             editBtn.style.display = 'none';
@@ -257,6 +258,19 @@ async function updateFriendButton(button, targetUserId) {
     button.textContent = '- Remove Friend';
     button.classList.add('friend');
   }
+}
+
+function attachProfileEventListeners() {
+    const editBtn = document.getElementById('editBtn');
+    const editProfileForm = document.getElementById('editProfileForm');
+
+    if (editBtn) {
+        editBtn.addEventListener('click', openEditProfileModal);
+    }
+
+    if (editProfileForm) {
+        editProfileForm.addEventListener('submit', handleProfileUpdate);
+    }
 }
 
 
