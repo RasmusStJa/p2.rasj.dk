@@ -159,7 +159,7 @@ async function loadProfile(id) {
 function openEditProfileModal() {
     // Pre-fill form with current data (from JS variables or by fetching again)
     const displayNameInput = document.getElementById('editDisplayName');
-    const programInput = document.getElementById('editProgram');
+    // const programInput = document.getElementById('editProgram');
     const bioInput = document.getElementById('editBio');
 
     // Example: Assuming you have current user data stored in a JS object `currentUserProfile`
