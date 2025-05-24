@@ -381,7 +381,7 @@ const html = await response.text();
 // This avoids loading the full <html>, <head>, <body> of terms.html into the modal
 const parser = new DOMParser();
 const doc = parser.parseFromString(html, 'text/html');
-const termsContent = doc.querySelector(.container.mt-5');
+const termsContent = doc.querySelector('.container.mt-5');
 
 if (termsContent) {
     modalBody.innerHTML = '';
