@@ -362,55 +362,51 @@ function displayFollowList(containerId, users) {
 async function showTermsModal() {
     const modal = document.getElementById('termsModal');
     const modalBody = document.getElementById('termsModalBody');
-    const closeButton = modal.querySelector('.modal-close-button');
+    const closeButton = modal?.querySelector('.modal-close-button');
 
-if (!modal || !modalBody || !closeButton) {
-    concole.error('Modal element not found.');
-    return;
-}
-
-try {
-    // Fetch the content of terms.html
-    const response = await fetch('/public/terms.html');
-    if (!response.ok) {
-        throw new Error('Failed to load terms.html: ${response.statusText}');
+    if (!modal || !modalBody || !closeButton) {
+        console.error('Modal element not found.');
+        return;
     }
-const html = await response.text();
 
-// Use DOMParser to parse the HTML and extract only the relevant content
-// This avoids loading the full <html>, <head>, <body> of terms.html into the modal
-const parser = new DOMParser();
-const doc = parser.parseFromString(html, 'text/html');
-const termsContent = doc.querySelector('.container.mt-5');
+    try {
+        const response = await fetch('/public/terms.html');
+        if (!response.ok) {
+            throw new Error(`Failed to load terms.html: ${response.statusText}`);
+        }
 
-if (termsContent) {
-    modalBody.innerHTML = '';
-    modalBody.appendChild(termsContent.cloneNode(true));
-} else {
-    modalBody.innerHTML = '<p>Could not load terms content.</p>';
-    console.error('could not find ".container.mt-5" in terms.html');
-}
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const termsContent = doc.querySelector('.container.mt-5');
 
-modal.style.display = 'block';
+        if (termsContent) {
+            modalBody.innerHTML = '';
+            modalBody.appendChild(termsContent.cloneNode(true));
+        } else {
+            modalBody.innerHTML = '<p>Could not load terms content.</p>';
+            console.error('Could not find ".container.mt-5" in terms.html');
+        }
 
-// Close modal when 'x' is clicked
-closeButton.onClick = () => {
-    modal.style.display = 'none';
-    modalBody.innerHTML = '';
-};
-// Close modal when clicking outside of the modal content
-window.onClick = (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
-        modalBody.innerHTML ='';
-    }
-}, { once: true});
-
-} catch (error) {
-    console.error('Error showing modal:', error);
-    if (modalBody {
-        modalBody.innerHTML = '<p>Error loading terms. please try again later.</p>';
         modal.style.display = 'block';
+
+        closeButton.onclick = () => {
+            modal.style.display = 'none';
+            modalBody.innerHTML = '';
+        };
+
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+                modalBody.innerHTML = '';
+            }
+        }, { once: true });
+
+    } catch (error) {
+        console.error('Error showing modal:', error);
+        if (modalBody) {
+            modalBody.innerHTML = '<p>Error loading terms. Please try again later.</p>';
+            modal.style.display = 'block';
+        }
     }
-}
 }
