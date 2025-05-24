@@ -209,7 +209,7 @@ function attachSignupListener() {
     const passwordInput = document.getElementById('password');
     const signupBtn = document.getElementById('signupBtn');
     const messageArea = document.getElementById('messageArea');
-    const termsLink = document.getElementById('termsLink);
+    const termsLink = document.getElementById('termsLink');
 
     if (signupForm && emailInput && passwordInput && signupBtn && messageArea) {
         signupForm.addEventListener('submit', async (event) => {
