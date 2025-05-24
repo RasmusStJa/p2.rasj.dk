@@ -361,7 +361,7 @@ function displayFollowList(containerId, users) {
 }
 async function showTermsModal() {
     const modal = document.getElementById('termsModal');
-    const modalBody = document.getElementById)'termsModalBody');
+    const modalBody = document.getElementById('termsModalBody');
     const closeButton = modal.querySelector('.modal-close-button');
 
 if (!modal || !modalBody || !closeButton) {
