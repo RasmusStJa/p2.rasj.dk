@@ -600,3 +600,46 @@ form button {
 .terms-link:hover {
     color: var(--primary-color-hover);
 }
+/*Modal*/
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.6);
+}
+.modal-content{
+  background-color: var(--bg-color);
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%
+  max-width 700px;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: var(--box-shadow)
+}
+.modal-close-button{
+  color: var(--text-color);
+  float: right;
+  font-size: 18px;
+  font-width: bold;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+.modal-close-button,
+.modal-close-button{
+  color: var(--btn-text);
+  text-decoration: none;
+  cursor: pointer;
+}
+#termsModalBody{
+  max-height: 60vh;
+  overflow-y: auto;
+  margin-top: 20px;
+}
