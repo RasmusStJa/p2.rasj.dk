@@ -11,15 +11,78 @@ function closeModal(modalId) {
     }
 }
     
-function toggleFollow(button) {
-    if (button.classList.contains('following')) {
-      button.classList.remove('following');
-      button.textContent = '+ Follow';
-    } else {
-      button.classList.add('following');
-      button.textContent = '- Follow';
+async function friends(button) {
+    const hash = window.location.hash; 
+    const match = hash.match(/\/(\d+)$/);
+    const targetUserId = match ? match[1] : null;
+
+    if (!targetUserId) {
+        console.error("No target user ID found in URL.");
+        return;
     }
-  }
+
+    try {
+        // Step 1: Check friendship status
+        const response = await fetch(`/api/friends/status/${targetUserId}`, {
+            credentials: 'include'
+        });
+
+        if (!response.ok) throw new Error("Failed to check friendship status");
+
+        const { status } = await response.json();
+
+        // Step 2: Handle each status case
+        if (status === 'none' || status === 'rejected') {
+            // Send friend request
+            const sendRes = await fetch(`/api/friends/request`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ friendId: targetUserId })
+            });
+
+            if (!sendRes.ok) throw new Error("Failed to send friend request");
+
+            button.textContent = 'Pending (Cancel)';
+            button.classList.add('pending');
+            button.classList.remove('friend');
+        } else if (status === 'pending') {
+            // Cancel pending request
+            const cancelRes = await fetch(`/api/friends/delete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ friendId: targetUserId })
+            });
+
+            if (!cancelRes.ok) throw new Error("Failed to cancel request");
+
+            button.textContent = '+ Add Friend';
+            button.classList.remove('pending', 'friend');
+        } else if (status === 'accepted') {
+            // Confirm and remove friend
+            const confirmDelete = confirm("Are you sure you want to remove this friend?");
+            if (!confirmDelete) return;
+
+            const deleteRes = await fetch(`/api/friends/delete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ friendId: targetUserId })
+            });
+
+            if (!deleteRes.ok) throw new Error("Failed to delete friend");
+
+            button.textContent = '+ Add Friend';
+            button.classList.remove('friend');
+        }
+
+    } catch (err) {
+        console.error("Friendship handling error:", err);
+        alert("Error handling friend request.");
+    }
+}
+
   
 // --- New Profile View and Edit Functions ---
 
@@ -60,6 +123,7 @@ async function loadProfile(id) {
         const profileBioEl = document.getElementById('profileBio');
         const followBtn = document.getElementById('followBtn');
         const editBtn = document.getElementById('editBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
 
         // Populate profile display
         if (profileUsernameEl) profileUsernameEl.textContent = userData.displayName || userData.username || 'N/A';
@@ -76,9 +140,12 @@ async function loadProfile(id) {
 
             followBtn.style.display = 'none';
             editBtn.style.display = 'inline';
+            deleteBtn.style.display = 'inline';
         } else {
             followBtn.style.display = 'inline';
             editBtn.style.display = 'none';
+            deleteBtn.style.display = 'none';
+            updateFriendButton(followBtn, id);
         }
 
     } catch (error) {
@@ -145,6 +212,53 @@ async function handleProfileUpdate(event) {
         alert(`Error updating profile: ${error.message}`);
     }
 }
+
+function DeleteProfile() {
+    const confirmDelete = confirm("⚠️ Are you sure you want to permanently delete your profile and all related data? This action cannot be undone.");
+
+    if (!confirmDelete) return;
+
+    fetch('/api/delete', {
+        method: 'POST',
+        credentials: 'include'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Failed to delete profile: ${response.statusText}`);
+        }
+        return response.json(); // optional if your endpoint sends JSON
+    })
+    .then(() => {
+        alert("Your profile has been deleted.");
+        window.location.href = '/'; // Redirect to home or login
+    })
+    .catch(error => {
+        console.error("Error deleting profile:", error);
+        alert("An error occurred while deleting your profile.");
+    });
+}
+
+async function updateFriendButton(button, targetUserId) {
+  const resp = await fetch(`/api/friends/status/${targetUserId}`, {
+    credentials: 'include'
+  });
+  if (!resp.ok) {
+    console.warn('Could not get friendship status');
+    return;
+  }
+  const { status } = await resp.json();
+  button.classList.remove('pending', 'friend');
+  if (status === 'none' || status === 'rejected') {
+    button.textContent = '+ Add Friend';
+  } else if (status === 'pending') {
+    button.textContent = 'Pending (Cancel)';
+    button.classList.add('pending');
+  } else if (status === 'accepted') {
+    button.textContent = '- Remove Friend';
+    button.classList.add('friend');
+  }
+}
+
 
 // --- Event Listeners ---
 

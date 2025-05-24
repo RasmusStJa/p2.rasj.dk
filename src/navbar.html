@@ -17,10 +17,15 @@
 
       <div class="icons-container">
       <div class="notification-wrapper" id="notificationWrapper">
-        <i class="fa-solid fa-bell notification-icon" id="notificationBell"></i>
+        <i class="fa-solid fa-bell notification-icon" id="notificationBell">
+          <span id="notificationCount" class="notification-count hidden"></span>
+        </i>
         <div class="notification-dropdown hidden" id="notificationDropdown">
           <div class="arrow-up"></div>
-          <p>No new notifications</p>
+          <div id="friendRequestsContainer">
+            <p>No new notifications</p>
+          </div>
+
         </div>
       </div>
 

@@ -268,19 +268,26 @@ form button {
     text-decoration: underline;
   }
   
-  .follow-btn, .edit-Btn {
+  .profile-btn {
     margin-top: 12px;
     padding: 8px 16px;
     border: none;
     border-radius: 6px;
-    background-color: var(--btn-bg);
     color: var(--btn-text);
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
+
+  .friend-btn, .edit-Btn {
+    background-color: var(--btn-bg);
+  }
   
-  .follow-btn.following {
-    background-color: var(--btn-following);
+  .friend-btn.pending {
+    background-color: var(--btn-pending);
+  }
+
+  .friend-btn.friend, .alert-btn {
+    background-color: var(--alert-btn);
   }
   
   .modal {
@@ -600,6 +607,7 @@ form button {
 .terms-link:hover {
     color: var(--primary-color-hover);
 }
+
 /*Modal*/
 .modal {
   display: none;
@@ -643,3 +651,4 @@ form button {
   overflow-y: auto;
   margin-top: 20px;
 }
+
