@@ -157,18 +157,18 @@ async function loadProfile(id) {
 
 // Function to open the edit profile modal
 function openEditProfileModal() {
-    // Pre-fill form with current data (from JS variables or by fetching again)
     const displayNameInput = document.getElementById('editDisplayName');
-    // const programInput = document.getElementById('editProgram');
     const bioInput = document.getElementById('editBio');
+    const modalTitle = document.getElementById('editModalTitle');
+    const modal = document.getElementById('editProfileModal');
 
-    // Example: Assuming you have current user data stored in a JS object `currentUserProfile`
-    // displayNameInput.value = currentUserProfile.displayName || '';
-    // programInput.value = currentUserProfile.program || '';
-    // bioInput.value = currentUserProfile.bio || '';
-    
-    document.getElementById('editModalTitle').innerText = 'Edit Profile'; // Or set based on user's name
-    document.getElementById('editProfileModal').style.display = 'block';
+    if (!displayNameInput || !bioInput || !modalTitle || !modal) {
+        console.error('Edit modal elements not found in DOM.');
+        return;
+    }
+
+    modalTitle.innerText = 'Edit Profile';
+    modal.style.display = 'block';
 }
 
 // Function to handle profile update submission
