@@ -7,11 +7,20 @@
             <div class="terms-checkbox">
                 <input type="checkbox" id="termsCheckbox" required>
                 <label for="termsCheckbox">
-                    I accept the <a href="#terms" onclick="loadContent('terms')" class="terms-link">Terms and Conditions</a>
+                    I accept the <a href="#" id="termsLink" class="terms-link">Terms and Conditions</a>
                 </label>
             </div>
             <button type="submit" id="signupBtn">Sign Up</button>
         </form>
         <div id="messageArea" class="message" style="display: none;"></div>
+    </div>
+</div>
+
+<div id="termsModal" class="modal" style="display: none;">
+    <div class="modal-content"
+        <span class="modal-close-button">&times;</span>
+        <div id="termsModalBody">
+
+        </div>
     </div>
 </div>
