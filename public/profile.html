@@ -24,7 +24,7 @@
           </div>
       
           <button id="followBtn" class="profile-btn friend-btn" onclick="friends(this)">+ Add Friend</button>
-          <button id="editBtn" class="profile-btn edit-Btn">Edit Profile</button>
+          <button id="editBtn" class="profile-btn edit-Btn" onclick="openEditProfileModal()">Edit Profile</button>
           <button id="deleteBtn" class="profile-btn alert-btn" onclick="DeleteProfile()">Delete Profile</button>
         </div>
       </div>
@@ -42,7 +42,7 @@
 <!-- Edit Profile Modal (adapting your existing modal structure) -->
 <div id="editProfileModal" class="modal" style="display:none;">
     <div class="modal-content">
-        <span class="close-button" onclick="closeModal('editProfileModal')">&times;</span
+        <span class="close-button" onclick="closeModal('editProfileModal')">&times;</span>
         <h2 id="editModalTitle">Edit Profile</h2>
         <form id="editProfileForm">
             <div>
