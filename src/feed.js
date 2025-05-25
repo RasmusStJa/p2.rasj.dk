@@ -182,6 +182,10 @@ function renderPosts(posts) {
                                 <p>${c.content}</p>
                             </div>
                         `).join('')}
+                        <div class="comment-box">
+                            <input type="text" placeholder="Write a comment..." class="comment-input"/>
+                            <button class="submit-comment">Post</button>
+                        </div>
                     `;
             } else {
                 existingDiv.innerHTML = '<p>No comments yet.</p>';
@@ -195,6 +199,9 @@ function renderPosts(posts) {
         }
         }
 
+        document.querySelectorAll('.post-card').forEach(p => p.classList.remove('highlighted'));
+        postCard.classList.add('highlighted');
+        
         box.classList.toggle('hidden');
         sidebar.classList.toggle('hidden');
         });
@@ -204,7 +211,7 @@ function renderPosts(posts) {
         btn.addEventListener('click', async () => {
             const postCard = btn.closest('.post-card');
             const postId = postCard.dataset.id;
-            const input = postCard.querySelector('.comment-input');
+            const input = document.querySelector('#commentsSidebar .comment-input');
             const comment = input.value.trim();
 
             if (!comment) return;
