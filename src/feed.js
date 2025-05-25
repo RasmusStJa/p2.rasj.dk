@@ -166,6 +166,7 @@ function renderPosts(posts) {
         sidebar.innerHTML = '<p>Loading comments...</p>';
 
         if (box.classList.contains('hidden')) {
+        }
         // Fetch & render existing comments
         try {
             const resp = await fetch(`/api/posts/${postId}/comments`, {
@@ -197,11 +198,10 @@ function renderPosts(posts) {
             console.error('Error loading comments:', err);
             existingDiv.innerHTML = '<p>Error loading comments.</p>';
         }
-        }
 
         document.querySelectorAll('.post-card').forEach(p => p.classList.remove('highlighted'));
         postCard.classList.add('highlighted');
-        
+
         box.classList.toggle('hidden');
         sidebar.classList.toggle('hidden');
         });
