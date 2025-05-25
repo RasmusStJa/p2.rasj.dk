@@ -408,7 +408,7 @@ form button {
 .existing-comments {
     position: fixed;
     top: 50%;
-    right: 1rem;
+    right: 3rem;
     transform: translateY(-50%);
     background: var(--form-bg);
     box-shadow: var(--box-shadow);
