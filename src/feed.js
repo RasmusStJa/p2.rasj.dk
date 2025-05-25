@@ -158,7 +158,7 @@ function renderPosts(posts) {
         const box = btn.nextElementSibling;       
         const postCard = btn.closest('.post-card');
         const postId = postCard.dataset.id;
-        const existingDiv = box.querySelector('.existing-comments');
+        const existingDiv = querySelector('.existing-comments');
 
         if (box.classList.contains('hidden')) {
         // Fetch & render existing comments
