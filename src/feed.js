@@ -196,6 +196,7 @@ function renderPosts(posts) {
         }
 
         box.classList.toggle('hidden');
+        sidebar.classList.toggle('hidden');
         });
     });
 
