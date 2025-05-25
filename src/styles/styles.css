@@ -414,7 +414,7 @@ form button {
     box-shadow: var(--box-shadow);
     padding: 1rem;
     border-radius: 12px;
-    max-height: 80vh;
+    max-height: 60vh;
     overflow-y: auto;
     min-width: 320px;
     max-width: 400px;
@@ -432,7 +432,7 @@ form button {
         bottom: 0;
         transform: none;
         border-radius: 0;
-        max-height: 50vh;
+        max-height: 30vh;
     }
 }
 
