@@ -113,11 +113,6 @@ function renderPosts(posts) {
                     </button>
                     
                     <button class="comment-btn">💬 Comment</button>
-                    
-                    <div class="comment-box hidden">
-                        <input type="text" placeholder="Write a comment..." class="comment-input"/>
-                        <button class="submit-comment">Post</button>
-                    </div>
                 </div>
             </div>
         `;
@@ -158,7 +153,6 @@ function renderPosts(posts) {
         const box = btn.nextElementSibling;       
         const postCard = btn.closest('.post-card');
         const postId = postCard.dataset.id;
-        const commentBox = postCard.querySelector('.comment-box');
         const sidebar = document.getElementById('commentsSidebar');
 
         if (!sidebar) return;
