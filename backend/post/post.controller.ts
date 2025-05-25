@@ -125,6 +125,7 @@ export const commentOnPost = async (req: Request, res: Response) => {
 export const commentsOnPost = async (req: Request, res: Response) => {
     const userId = req.session?.userId;
     const postId = parseInt(req.params.id, 10);
+    const pool = await getDbPool();
 
     if (!userId) return res.status(401).json({ message: 'Not logged in' });
     if (isNaN(postId)) return res.status(400).json({ message: 'Invalid post ID' });
