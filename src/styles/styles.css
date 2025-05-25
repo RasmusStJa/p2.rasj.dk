@@ -413,12 +413,32 @@ form button {
     background: var(--form-bg);
     box-shadow: var(--box-shadow);
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: 12px;
     max-height: 80vh;
     overflow-y: auto;
-    min-width: 300px;
+    min-width: 320px;
+    max-width: 400px;
+    width: 90%;
     box-sizing: border-box;
     z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .existing-comments {
+        right: 0;
+        left: 0;
+        top: auto;
+        bottom: 0;
+        transform: none;
+        border-radius: 0;
+        max-height: 50vh;
+    }
+}
+
+.post-card.highlighted {
+    border: 2px solid #4CAF50;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
 }
 
 .feed-title {
