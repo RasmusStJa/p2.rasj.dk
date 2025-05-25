@@ -130,7 +130,7 @@ export const commentsOnPost = async (req: Request, res: Response) => {
     if (isNaN(postId)) return res.status(400).json({ message: 'Invalid post ID' });
 
     try {
-        const [rows] = await dbPool.query<RowDataPacket[]>(
+        const [rows] = await pool.query<RowDataPacket[]>(
             `SELECT c.comment_id, c.content, c.created_at, u.username
             FROM comments c
             JOIN users u ON c.user_id = u.user_id
