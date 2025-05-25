@@ -161,6 +161,7 @@ function renderPosts(posts) {
             if (isActive) {
                 postCard.classList.remove('highlighted');
                 sidebar.classList.add('hidden');
+                sidebar.innerHTML = '';
                 return;
             }
 
