@@ -400,16 +400,16 @@ form button {
 /* Feed */
 .feed-wrapper {
     display: flex;
-    gap: 2rem;
-    align-items: flex-start;
-}
-
-.posts-container {
-    flex: 2;
+    flex-direction: column;
+    height: calc(100vh - 100px);
+    margin: 0 auto;
 }
 
 .existing-comments {
-    flex: 1;
+    position: fixed;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
     background: var(--form-bg);
     box-shadow: var(--box-shadow);
     padding: 1rem;
@@ -417,6 +417,8 @@ form button {
     max-height: 80vh;
     overflow-y: auto;
     min-width: 300px;
+    box-sizing: border-box;
+    z-index: 1000;
 }
 
 .feed-title {
