@@ -158,7 +158,12 @@ function renderPosts(posts) {
         const box = btn.nextElementSibling;       
         const postCard = btn.closest('.post-card');
         const postId = postCard.dataset.id;
-        const existingDiv = querySelector('.existing-comments');
+        const commentBox = postCard.querySelector('.comment-box');
+        const sidebar = document.getElementById('commentsSidebar');
+
+        if (!sidebar) return;
+
+        sidebar.innerHTML = '<p>Loading comments...</p>';
 
         if (box.classList.contains('hidden')) {
         // Fetch & render existing comments
@@ -169,10 +174,15 @@ function renderPosts(posts) {
             if (resp.ok) {
             const comments = await resp.json();
             if (comments.length) {
-                existingDiv.innerHTML = comments.map(c => `
-                <p><strong>${c.username}</strong> ${formatTime(c.created_at)}:<br>
-                ${c.content}</p>
-                `).join('');
+                sidebar.innerHTML = `
+                        <h3>Comments</h3>
+                        ${comments.map(c => `
+                            <div class="comment-block">
+                                <p><strong>${c.username}</strong> ${formatTime(c.created_at)}</p>
+                                <p>${c.content}</p>
+                            </div>
+                        `).join('')}
+                    `;
             } else {
                 existingDiv.innerHTML = '<p>No comments yet.</p>';
             }

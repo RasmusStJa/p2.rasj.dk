@@ -405,6 +405,17 @@ form button {
     margin: 0 auto;
 }
 
+.existing-comments {
+    flex: 1;
+    background: var(--form-bg);
+    box-shadow: var(--box-shadow);
+    padding: 1rem;
+    border-radius: 8px;
+    max-height: 80vh;
+    overflow-y: auto;
+    min-width: 300px;
+}
+
 .feed-title {
     font-size: 2rem;
     text-align: center;
