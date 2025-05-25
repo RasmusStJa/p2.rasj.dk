@@ -12,6 +12,6 @@ router.post('/:id/react', reactToPost as RequestHandler);
 router.post('/:id/comment', commentOnPost as RequestHandler);
 
 // Comments from a post
-router.post('/:id/comments', commentsOnPost as RequestHandler);
+router.get('/:id/comments', commentsOnPost as RequestHandler);
 
 export default router;
