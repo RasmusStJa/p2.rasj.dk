@@ -149,80 +149,79 @@ function renderPosts(posts) {
 
     // COMMENT HANDLERS
     container.querySelectorAll('.comment-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-        const box = btn.nextElementSibling;       
-        const postCard = btn.closest('.post-card');
-        const postId = postCard.dataset.id;
-        const sidebar = document.getElementById('commentsSidebar');
+        btn.addEventListener('click', async () => {    
+            const postCard = btn.closest('.post-card');
+            const postId = postCard.dataset.id;
+            const sidebar = document.getElementById('commentsSidebar');
 
-        if (!sidebar) return;
+            if (!sidebar) return;
 
-        sidebar.innerHTML = '<p>Loading comments...</p>';
+            const isActive = postCard.classList.contains('highlighted');
 
-        if (box.classList.contains('hidden')) {
-        }
-        // Fetch & render existing comments
-        try {
-            const resp = await fetch(`/api/posts/${postId}/comments`, {
-            credentials: 'include'
-            });
-            if (resp.ok) {
-            const comments = await resp.json();
-            if (comments.length) {
-                sidebar.innerHTML = `
+            if (isActive) {
+                postCard.classList.remove('highlighted');
+                sidebar.classList.add('hidden');
+                return;
+            }
+
+            document.querySelectorAll('.post-card').forEach(p => p.classList.remove('highlighted'));
+            postCard.classList.add('highlighted');
+            sidebar.classList.remove('hidden');
+            sidebar.innerHTML = '<p>Loading comments...</p>';
+
+            // Submit comment
+            const submitBtn = sidebar.querySelector('.submit-comment');
+            if (submitBtn) {
+                submitBtn.addEventListener('click', async () => {
+                    const input = sidebar.querySelector('.comment-input');
+                    const comment = input.value.trim();
+                    if (!comment) return;
+
+                    try {
+                        const res = await fetch(`/api/posts/${postId}/comment`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ comment })
+                    });
+
+                        if (res.ok) {
+                            input.value = '';
+                        }
+                    } catch (err) {
+                        console.error('Failed to post comment:', err);
+                    }
+                });
+            }
+
+
+            // Fetch & render existing comments
+            try {
+                const resp = await fetch(`/api/posts/${postId}/comments`, {
+                    credentials: 'include'
+                });
+
+                if (resp.ok) {
+                    const comments = await resp.json();
+                    sidebar.innerHTML = `
                         <h3>Comments</h3>
-                        ${comments.map(c => `
+                        ${comments.length ? comments.map(c => `
                             <div class="comment-block">
                                 <p><strong>${c.username}</strong> ${formatTime(c.created_at)}</p>
                                 <p>${c.content}</p>
                             </div>
-                        `).join('')}
+                        `).join('') : '<p>No comments yet.</p>'}
                         <div class="comment-box">
                             <input type="text" placeholder="Write a comment..." class="comment-input"/>
                             <button class="submit-comment">Post</button>
                         </div>
                     `;
-            } else {
-                existingDiv.innerHTML = '<p>No comments yet.</p>';
-            }
-            } else {
-            existingDiv.innerHTML = '<p>Failed to load comments.</p>';
-            }
-        } catch (err) {
-            console.error('Error loading comments:', err);
-            existingDiv.innerHTML = '<p>Error loading comments.</p>';
-        }
-
-        document.querySelectorAll('.post-card').forEach(p => p.classList.remove('highlighted'));
-        postCard.classList.add('highlighted');
-
-        box.classList.toggle('hidden');
-        sidebar.classList.toggle('hidden');
-        });
-    });
-
-    container.querySelectorAll('.submit-comment').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            const postCard = btn.closest('.post-card');
-            const postId = postCard.dataset.id;
-            const input = document.querySelector('#commentsSidebar .comment-input');
-            const comment = input.value.trim();
-
-            if (!comment) return;
-
-            try {
-                const res = await fetch(`/api/posts/${postId}/comment`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({ comment })
-                });
-
-                if (res.ok) {
-                    input.value = '';
+                } else {
+                    sidebar.innerHTML = '<p>Failed to load comments.</p>';
                 }
             } catch (err) {
-                console.error('Failed to post comment:', err);
+                console.error('Error loading comments:', err);
+                sidebar.innerHTML = '<p>Error loading comments.</p>';
             }
         });
     });
