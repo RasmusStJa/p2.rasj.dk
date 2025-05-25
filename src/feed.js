@@ -169,32 +169,6 @@ function renderPosts(posts) {
             sidebar.classList.remove('hidden');
             sidebar.innerHTML = '<p>Loading comments...</p>';
 
-            // Submit comment
-            const submitBtn = sidebar.querySelector('.submit-comment');
-            if (submitBtn) {
-                submitBtn.addEventListener('click', async () => {
-                    const input = sidebar.querySelector('.comment-input');
-                    const comment = input.value.trim();
-                    if (!comment) return;
-
-                    try {
-                        const res = await fetch(`/api/posts/${postId}/comment`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        credentials: 'include',
-                        body: JSON.stringify({ comment })
-                    });
-
-                        if (res.ok) {
-                            input.value = '';
-                        }
-                    } catch (err) {
-                        console.error('Failed to post comment:', err);
-                    }
-                });
-            }
-
-
             // Fetch & render existing comments
             try {
                 const resp = await fetch(`/api/posts/${postId}/comments`, {
@@ -216,6 +190,30 @@ function renderPosts(posts) {
                             <button class="submit-comment">Post</button>
                         </div>
                     `;
+                        // Submit comment
+                        const submitBtn = sidebar.querySelector('.submit-comment');
+                        if (submitBtn) {
+                            submitBtn.addEventListener('click', async () => {
+                                const input = sidebar.querySelector('.comment-input');
+                                const comment = input.value.trim();
+                                if (!comment) return;
+
+                                try {
+                                    const res = await fetch(`/api/posts/${postId}/comment`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    credentials: 'include',
+                                    body: JSON.stringify({ comment })
+                                });
+
+                                    if (res.ok) {
+                                        input.value = '';
+                                    }
+                                } catch (err) {
+                                    console.error('Failed to post comment:', err);
+                                }
+                            });
+                        }
                 } else {
                     sidebar.innerHTML = '<p>Failed to load comments.</p>';
                 }
