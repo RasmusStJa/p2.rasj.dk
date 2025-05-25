@@ -653,13 +653,15 @@ form button {
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    align-self: flex-end;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
 }
 
 .submit-comment:hover {
     background-color: #45a049;
 }
+
 
 /* Terms and Conditions */
 .terms-checkbox {
