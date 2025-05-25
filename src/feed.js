@@ -179,12 +179,14 @@ function renderPosts(posts) {
                     const comments = await resp.json();
                     sidebar.innerHTML = `
                         <h3>Comments</h3>
-                        ${comments.length ? comments.map(c => `
-                            <div class="comment-block">
-                                <p><strong>${c.username}</strong> ${formatTime(c.created_at)}</p>
-                                <p>${c.content}</p>
-                            </div>
-                        `).join('') : '<p>No comments yet.</p>'}
+                        <div class="comments-scroll">
+                            ${comments.length ? comments.map(c => `
+                                <div class="comment-block">
+                                    <p><strong>${c.username}</strong> ${formatTime(c.created_at)}</p>
+                                    <p>${c.content}</p>
+                                </div>
+                            `).join('') : '<p>No comments yet.</p>'}
+                        </div>
                         <div class="comment-box">
                             <input type="text" placeholder="Write a comment..." class="comment-input"/>
                             <button class="submit-comment">Post</button>
