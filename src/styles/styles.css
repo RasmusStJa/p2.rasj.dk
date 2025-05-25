@@ -400,9 +400,12 @@ form button {
 /* Feed */
 .feed-wrapper {
     display: flex;
-    flex-direction: column;
-    height: calc(100vh - 100px);
-    margin: 0 auto;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.posts-container {
+    flex: 2;
 }
 
 .existing-comments {
