@@ -115,6 +115,7 @@ function renderPosts(posts) {
                     <button class="comment-btn">💬 Comment</button>
                     
                     <div class="comment-box hidden">
+                        <div class="existing-comments"></div>
                         <input type="text" placeholder="Write a comment..." class="comment-input"/>
                         <button class="submit-comment">Post</button>
                     </div>
@@ -154,9 +155,38 @@ function renderPosts(posts) {
 
     // COMMENT HANDLERS
     container.querySelectorAll('.comment-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const box = btn.nextElementSibling;
-            box.classList.toggle('hidden');
+        btn.addEventListener('click', async () => {
+        const box = btn.nextElementSibling;       
+        const postCard = btn.closest('.post-card');
+        const postId = postCard.dataset.id;
+        const existingDiv = box.querySelector('.existing-comments');
+
+        if (box.classList.contains('hidden')) {
+        // Fetch & render existing comments
+        try {
+            const resp = await fetch(`/api/posts/${postId}/comments`, {
+            credentials: 'include'
+            });
+            if (resp.ok) {
+            const comments = await resp.json();
+            if (comments.length) {
+                existingDiv.innerHTML = comments.map(c => `
+                <p><strong>${c.username}</strong> ${formatTime(c.created_at)}:<br>
+                ${c.content}</p>
+                `).join('');
+            } else {
+                existingDiv.innerHTML = '<p>No comments yet.</p>';
+            }
+            } else {
+            existingDiv.innerHTML = '<p>Failed to load comments.</p>';
+            }
+        } catch (err) {
+            console.error('Error loading comments:', err);
+            existingDiv.innerHTML = '<p>Error loading comments.</p>';
+        }
+        }
+
+        box.classList.toggle('hidden');
         });
     });
 

@@ -119,3 +119,28 @@ export const commentOnPost = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Failed to add comment' });
     }
 };
+
+
+// --- Comment on Post ---
+export const commentsOnPost = async (req: Request, res: Response) => {
+    const userId = req.session?.userId;
+    const postId = parseInt(req.params.id, 10);
+
+    if (!userId) return res.status(401).json({ message: 'Not logged in' });
+    if (isNaN(postId)) return res.status(400).json({ message: 'Invalid post ID' });
+
+    try {
+        const [rows] = await dbPool.query<RowDataPacket[]>(
+            `SELECT c.comment_id, c.content, c.created_at, u.username
+            FROM comments c
+            JOIN users u ON c.user_id = u.user_id
+            WHERE c.post_id = ?
+            ORDER BY c.created_at ASC`,
+            [postId]
+            );
+            res.json(rows);
+    } catch (err) {
+        console.error('Failed to fetch comments:', err);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
