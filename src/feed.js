@@ -115,7 +115,6 @@ function renderPosts(posts) {
                     <button class="comment-btn">💬 Comment</button>
                     
                     <div class="comment-box hidden">
-                        <div class="existing-comments"></div>
                         <input type="text" placeholder="Write a comment..." class="comment-input"/>
                         <button class="submit-comment">Post</button>
                     </div>
