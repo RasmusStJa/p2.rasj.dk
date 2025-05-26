@@ -211,6 +211,29 @@ function renderPosts(posts) {
 
                                     if (res.ok) {
                                         input.value = '';
+    
+                                        // Re-fetch and update comments
+                                        try {
+                                            const updatedResp = await fetch(`/api/posts/${postId}/comments`, {
+                                                credentials: 'include'
+                                            });
+                                    
+                                            if (updatedResp.ok) {
+                                                const updatedComments = await updatedResp.json();
+                                                const scrollDiv = sidebar.querySelector('.comments-scroll');
+                                                if (scrollDiv) {
+                                                    scrollDiv.innerHTML = updatedComments.length ? updatedComments.map(c => `
+                                                        <div class="comment-block">
+                                                            <p><strong>${c.username}</strong> ${formatTime(c.created_at)}</p>
+                                                            <p>${c.content}</p>
+                                                        </div>
+                                                    `).join('') : '<p>No comments yet.</p>';
+                                                }
+                                            }
+                                            
+                                        } catch (err) {
+                                            console.error('Failed to refresh comments:', err);
+                                        }
                                     }
                                 } catch (err) {
                                     console.error('Failed to post comment:', err);
