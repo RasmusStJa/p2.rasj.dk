@@ -125,18 +125,38 @@ async function loadProfile(id) {
         const editBtn = document.getElementById('editBtn');
         const deleteBtn = document.getElementById('deleteBtn');
 
+        const profileStudyEl = document.getElementById('profileStudy');
+        const profileHashtagsEl = document.getElementById('profileHashtags');
+
         // Populate profile display
         if (profileUsernameEl) profileUsernameEl.textContent = userData.displayName || userData.username || 'N/A';
+        
         if (profileEmailEl) profileEmailEl.textContent = userData.email || 'N/A';
         if (profileBioEl) profileBioEl.textContent = userData.bio || 'N/A';
+
+            if (profileStudyEl) {
+                const program = userData.program || '';
+                const school = userData.school || '';
+                profileStudyEl.textContent = (program || school)
+                ? `${program}${program && school ? ' @ ' : ''}${school}`
+                : 'N/A';
+            }
+        
+         if (profileHashtagsEl) profileHashtagsEl.textContent = userData.hashtags || 'N/A';
 
         // If it's your own profile, pre-fill the edit form
         if (isSelf) {
             const editDisplayName = document.getElementById('editDisplayName');
             const editBio = document.getElementById('editBio');
+            const editProgram = document.getElementById('"editProgram');
+            const editSchool = document.getElementById('editSchool');
+            const editHashtags = document.getElementById('editHashtags');
 
             if (editDisplayName) editDisplayName.value = userData.displayName || '';
             if (editBio) editBio.value = userData.bio || '';
+            if (editProgram) editProgram.value = userData.program || '';
+            if (editSchool) editSchool.value = userData.school || '';
+            if (editHashtags) editHashtags.value = userData.hashtags || '';
 
             followBtn.style.display = 'none';
             editBtn.style.display = 'inline';
@@ -162,8 +182,10 @@ function openEditProfileModal() {
     const modalTitle = document.getElementById('editModalTitle');
     const modal = document.getElementById('editProfileModal');
     const program = document.getElementById('editProgram');
+    const school = document.getElementById('editSchool');
+    const hashtags = document.getElementById('editHashtags');
 
-    if (!displayNameInput || !bioInput || !modalTitle || !modal || !program) {
+    if (!displayNameInput || !bioInput || !modalTitle || !modal || !program || !school || !hashtags) {
         console.error('Edit modal elements not found in DOM.');
         return;
     }
@@ -179,6 +201,8 @@ async function handleProfileUpdate(event) {
     const displayName = document.getElementById('editDisplayName').value;
     const bio = document.getElementById('editBio').value;
     const program = document.getElementById('editProgram').value;
+    const school = document.getElementById('editSchool').value;
+    const hashtags = document.getElementById('editHashtags').value;
 
     try {
         const response = await fetch('/api/users/me', {
@@ -187,7 +211,7 @@ async function handleProfileUpdate(event) {
                 'Content-Type': 'application/json',
             },
             credentials: 'include',
-            body: JSON.stringify({ displayName, program, bio }),
+            body: JSON.stringify({ displayName, program, bio, school, hashtags }),
         });
 
         if (!response.ok) {
