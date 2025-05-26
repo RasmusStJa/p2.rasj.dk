@@ -249,4 +249,41 @@ function renderPosts(posts) {
             }
         });
     });
+
+
+    
+    setInterval(async () => {
+        const sidebar = document.getElementById('commentsSidebar');
+        const highlightedPost = document.querySelector('.post-card.highlighted');
+    
+        // Only proceed if a post is active and visible
+        if (!sidebar || sidebar.classList.contains('hidden') || !highlightedPost) return;
+    
+        const input = sidebar.querySelector('.comment-input');
+        if (document.activeElement === input) return; // skip if user is typing
+    
+        const postId = highlightedPost.dataset.id;
+    
+        try {
+            const res = await fetch(`/api/posts/${postId}/comments`, {
+                credentials: 'include'
+            });
+    
+            if (res.ok) {
+                const comments = await res.json();
+                const scrollDiv = sidebar.querySelector('.comments-scroll');
+                if (scrollDiv) {
+                    scrollDiv.innerHTML = comments.length ? comments.map(c => `
+                        <div class="comment-block">
+                            <p><strong>${c.username}</strong> ${formatTime(c.created_at)}</p>
+                            <p>${c.content}</p>
+                        </div>
+                    `).join('') : '<p>No comments yet.</p>';
+                }
+            }
+        } catch (err) {
+            console.error('Failed to auto-refresh comments:', err);
+        }
+    }, 5000);
+    
 }
