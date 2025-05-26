@@ -691,3 +691,80 @@ form button {
 .terms-link:hover {
     color: var(--primary-color-hover);
 }
+
+
+
+
+/* Edit Profile Modal Enhancements */
+#editProfileModal .modal-content {
+    background-color: var(--form-bg);
+    padding: 32px;
+    border-radius: 16px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: var(--shadow);
+    font-family: 'Segoe UI', sans-serif;
+    color: var(--text-color);
+}
+
+#editProfileModal h2 {
+    margin-bottom: 24px;
+    font-size: 1.8rem;
+    color: var(--text-color);
+    text-align: center;
+}
+
+#editProfileForm {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#editProfileForm label {
+    margin-bottom: 4px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--subtext-color);
+}
+
+#editProfileForm input[type="text"],
+#editProfileForm textarea {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+#editProfileForm textarea {
+    min-height: 80px;
+}
+
+#editProfileForm button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+#editProfileForm button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+#editProfileModal .close-btn {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    font-size: 1.4rem;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
