@@ -696,17 +696,6 @@ form button {
 
 
 /* Edit Profile Modal Enhancements */
-#editProfileModal .modal-content {
-    background-color: var(--form-bg);
-    padding: 32px;
-    border-radius: 16px;
-    max-width: 480px;
-    width: 90%;
-    box-shadow: var(--shadow);
-    font-family: 'Segoe UI', sans-serif;
-    color: var(--text-color);
-}
-
 #editProfileModal h2 {
     margin-bottom: 24px;
     font-size: 1.8rem;
