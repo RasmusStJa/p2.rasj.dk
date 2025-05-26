@@ -226,9 +226,9 @@ async function handleProfileUpdate(event) {
 
         document.getElementById('profileBio').textContent = updatedUserData.bio || 'N/A';
 
-        const program = updatedUserData.program || '';
-        const school = updatedUserData.school || '';
-        document.getElementById('profileStudy').textContent = (program || school) ? `${program}${program && school ? ' @ ' : ''}${school}` : 'N/A';
+        const programUpdated = updatedUserData.program || '';
+        const schoolUpdated = updatedUserData.school || '';
+        document.getElementById('profileStudy').textContent = (programUpdated || schoolUpdated) ? `${programUpdated}${programUpdated && schoolUpdated ? ' @ ' : ''}${schoolUpdated}` : 'N/A';
 
         document.getElementById('profileHashtags').textContent = updatedUserData.hashtags || 'N/A';
         
