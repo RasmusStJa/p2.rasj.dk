@@ -26,7 +26,7 @@ router.post('/', (async (req: Request, res: Response) => {
         }
 
         // Enforce AAU email domain check
-        const aauDomainRegex = /^[^@]+@[^@]*aau\.dk$/i;
+        const aauDomainRegex = /^[^@]+@[^@]*.aau\.dk$/i;
         if (!aauDomainRegex.test(email)) {
             return res.status(400).json({ error: 'Email must be an AAU email address (contain aau.dk)' });
         }
