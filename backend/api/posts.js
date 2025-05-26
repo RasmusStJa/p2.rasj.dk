@@ -35,8 +35,3 @@ async function createNewPost(postContent) {
         return null;
     }
 }
-
-// Example usage (e.g., in a form submit handler for creating posts):
-// const postTextArea = document.getElementById('post-content');
-// const createdPost = await createNewPost(postTextArea.value);
-// if (createdPost) { /* Update UI */ } else { /* Show error */ }
