@@ -26,7 +26,7 @@ router.post('/', (async (req: Request, res: Response) => {
         }
 
         // Enforce AAU email domain check
-        if (email.substring(-7, -1) != "@aau.dk" && email.substring(-7, -1) != ".aau.dk"){
+        if (email.substring(-7, -1) != "@aau.dk" || email.substring(-7, -1) != ".aau.dk"){
             return res.status(400).json({ error: 'Email is invalid' });
         }
 
