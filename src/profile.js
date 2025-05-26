@@ -161,8 +161,9 @@ function openEditProfileModal() {
     const bioInput = document.getElementById('editBio');
     const modalTitle = document.getElementById('editModalTitle');
     const modal = document.getElementById('editProfileModal');
+    const program = document.getElementById('editProgram');
 
-    if (!displayNameInput || !bioInput || !modalTitle || !modal) {
+    if (!displayNameInput || !bioInput || !modalTitle || !modal || !program) {
         console.error('Edit modal elements not found in DOM.');
         return;
     }
@@ -177,6 +178,7 @@ async function handleProfileUpdate(event) {
 
     const displayName = document.getElementById('editDisplayName').value;
     const bio = document.getElementById('editBio').value;
+    const program = document.getElementById('editProgram').value;
 
     try {
         const response = await fetch('/api/users/me', {
@@ -185,7 +187,7 @@ async function handleProfileUpdate(event) {
                 'Content-Type': 'application/json',
             },
             credentials: 'include',
-            body: JSON.stringify({ displayName, bio }),
+            body: JSON.stringify({ displayName, program, bio }),
         });
 
         if (!response.ok) {
