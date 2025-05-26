@@ -148,7 +148,7 @@ async function loadProfile(id) {
         if (isSelf) {
             const editDisplayName = document.getElementById('editDisplayName');
             const editBio = document.getElementById('editBio');
-            const editProgram = document.getElementById('"editProgram');
+            const editProgram = document.getElementById('editProgram');
             const editSchool = document.getElementById('editSchool');
             const editHashtags = document.getElementById('editHashtags');
 
@@ -225,6 +225,12 @@ async function handleProfileUpdate(event) {
         document.getElementById('profileUsername').textContent = updatedUserData.displayName || updatedUserData.username || 'N/A';
 
         document.getElementById('profileBio').textContent = updatedUserData.bio || 'N/A';
+
+        const program = updatedUserData.program || '';
+        const school = updatedUserData.school || '';
+        document.getElementById('profileStudy').textContent = (program || school) ? `${program}${program && school ? ' @ ' : ''}${school}` : 'N/A';
+
+        document.getElementById('profileHashtags').textContent = updatedUserData.hashtags || 'N/A';
         
         // Optionally update other fields if returned
         if (updatedUserData.email) document.getElementById('profileEmail').textContent = updatedUserData.email;
