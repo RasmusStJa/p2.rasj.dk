@@ -181,11 +181,11 @@ function openEditProfileModal() {
     const bioInput = document.getElementById('editBio');
     const modalTitle = document.getElementById('editModalTitle');
     const modal = document.getElementById('editProfileModal');
-    const program = document.getElementById('editProgram');
-    const school = document.getElementById('editSchool');
-    const hashtags = document.getElementById('editHashtags');
+    const programInput = document.getElementById('editProgram');
+    const schoolInput = document.getElementById('editSchool');
+    const hashtagsInput = document.getElementById('editHashtags');
 
-    if (!displayNameInput || !bioInput || !modalTitle || !modal || !program || !school || !hashtags) {
+    if (!displayNameInput || !bioInput || !modalTitle || !modal || !programInput || !schoolInput || !hashtagsInput) {
         console.error('Edit modal elements not found in DOM.');
         return;
     }
