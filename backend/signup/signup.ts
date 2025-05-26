@@ -25,6 +25,12 @@ router.post('/', (async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'Email and password are required' });
         }
 
+        // Enforce AAU email domain check
+        const aauDomainRegex = /^[^@]+@[^@]*aau\.dk$/i;
+        if (!aauDomainRegex.test(email)) {
+            return res.status(400).json({ error: 'Email must be an AAU email address (contain aau.dk)' });
+        }
+
         const result = await signupUser({ email, password });
         
         console.log(`User created successfully: ID=${result.userId}, Email=${email}, Username=${result.username}`);

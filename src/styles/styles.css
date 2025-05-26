@@ -17,6 +17,30 @@ body {
     height: 100vh;
 }
 
+.hero-content h1 {
+  font-size: 2rem;
+  margin-top: 3em;
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 60px 20px;
+  background: var(--bg-color);
+  gap: 2rem;
+}
+
+.feature-box {
+  background: var(--form-bg);
+  color: var(--text-color);
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  width: 280px;
+  text-align: center;
+}
+
 .mode-toggle {
     background: none;
     border: none;
