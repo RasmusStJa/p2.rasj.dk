@@ -26,9 +26,8 @@ router.post('/', (async (req: Request, res: Response) => {
         }
 
         // Enforce AAU email domain check
-        const aauDomainRegex = /^[^@]+@[^@]*.aau\.dk$/i;
-        if (!aauDomainRegex.test(email)) {
-            return res.status(400).json({ error: 'Email must be an AAU email address (contain aau.dk)' });
+        if (email.substring(-7, -1) != "@aau.dk" && email.substring(-7, -1) != ".aau.dk"){
+            return res.status(400).json({ error: 'Email is invalid' });
         }
 
         const result = await signupUser({ email, password });
