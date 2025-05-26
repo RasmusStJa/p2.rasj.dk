@@ -706,7 +706,7 @@ form button {
 #editProfileForm {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
 }
 
 #editProfileForm label {
@@ -724,12 +724,12 @@ form button {
     border-radius: 8px;
     background-color: var(--bg-color);
     color: var(--text-color);
-    resize: vertical;
+    resize: none;
     box-sizing: border-box;
 }
 
 #editProfileForm textarea {
-    min-height: 80px;
+    min-height: 60px;
 }
 
 #editProfileForm button[type="submit"] {
@@ -747,13 +747,3 @@ form button {
 #editProfileForm button[type="submit"]:hover {
     background-color: #45a049;
 }
-
-#editProfileModal .close-btn {
-    position: absolute;
-    top: 12px;
-    right: 20px;
-    font-size: 1.4rem;
-    color: var(--text-color);
-    cursor: pointer;
-}
-
