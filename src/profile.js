@@ -142,7 +142,7 @@ async function loadProfile(id) {
                 : 'N/A';
             }
         
-         if (profileHashtagsEl) profileHashtagsEl.textContent = userData.hashtags || 'N/A';
+         if (profileHashtagsEl) updateHashtags(userData.hashtags);
 
         // If it's your own profile, pre-fill the edit form
         if (isSelf) {
@@ -230,7 +230,7 @@ async function handleProfileUpdate(event) {
         const schoolUpdated = updatedUserData.school || '';
         document.getElementById('profileStudy').textContent = (programUpdated || schoolUpdated) ? `${programUpdated}${programUpdated && schoolUpdated ? ' @ ' : ''}${schoolUpdated}` : 'N/A';
 
-        document.getElementById('profileHashtags').textContent = updatedUserData.hashtags || 'N/A';
+        updateHashtags(updatedUserData.hashtags);
         
         // Optionally update other fields if returned
         if (updatedUserData.email) document.getElementById('profileEmail').textContent = updatedUserData.email;
@@ -289,6 +289,31 @@ async function updateFriendButton(button, targetUserId) {
     button.textContent = '- Remove Friend';
     button.classList.add('friend');
   }
+}
+
+function updateHashtags(rawHashtags) {
+    const container = document.getElementById('profileHashtags');
+    if (!container) return;
+
+    // Clear existing tags
+    container.innerHTML = '';
+
+    const raw = rawHashtags || '';
+    const tags = raw
+        .split(/\s+/)
+        .map(t => t.trim())
+        .filter(t => t.startsWith('#') && t.length > 1);
+
+    if (tags.length) {
+        tags.forEach(tagText => {
+          const span = document.createElement('span');
+          span.className = 'tag';
+          span.textContent = tagText;
+          container.appendChild(span);
+        });
+    } else {
+        container.textContent = 'No tags';
+    }
 }
 
 // --- Event Listeners ---
