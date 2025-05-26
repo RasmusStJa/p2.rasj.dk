@@ -278,16 +278,16 @@ form button {
     transition: background-color 0.3s ease;
   }
 
-  .alert-btn {
+  .alert-btn, friend-btn.friend {
     background-color: var(--alert-btn);
   }
 
-  .follow-btn, .edit-Btn {
+  .friend-btn, .edit-Btn {
     background-color: var(--btn-bg);
   }
   
-  .follow-btn.following {
-    background-color: var(--btn-following);
+  .friend-btn.pending {
+    background-color: var(--btn-pending);
   }
   
   .modal {
