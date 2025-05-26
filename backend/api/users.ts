@@ -13,6 +13,8 @@ interface UserProfile {
     program?: string | null;     // From user_profiles table
     bio?: string | null;         // From user_profiles table
     created_at?: string;     // From users table (optional to send to frontend)
+    school: string | null;
+    hashtags: string | null;
 }
 
 // Middleware to check if user is authenticated 
@@ -60,7 +62,10 @@ router.get('/:id', async (req, res) => {
                 u.created_at,
                 up.display_name AS displayName,
                 up.program,
-                up.bio
+                up.bio,
+                up.program,
+                up.school,
+                up.hashtags
             FROM
                 users u
             LEFT JOIN
@@ -97,9 +102,11 @@ router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
     const {
         displayName,
         program,
-        bio
+        bio,
+        school,
+        hashtags
     } = req.body;
-    console.log(`PUT /api/users/me: Body params:`, { displayName, program, bio });
+    console.log(`PUT /api/users/me: Body params:`, { displayName, program, bio, school, hashtags });
 
     let connection;
 
@@ -114,6 +121,8 @@ router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
         if (displayName !== undefined) profileFields.display_name = displayName;
         if (program !== undefined) profileFields.program = program;
         if (bio !== undefined) profileFields.bio = bio;
+        if (school !== undefined) profileFields.school = school;
+        if (hashtags !== undefined) profileFields.hashtags = hashtags;
 
         if (Object.keys(profileFields).length > 0) {
             const upsertSql = `
@@ -134,7 +143,7 @@ router.put('/me', isAuthenticated, async (req: Request, res: Response) => {
         const getUpdatedProfileSql = `
             SELECT
                 u.user_id, u.username, u.email, u.role, u.created_at,
-                up.display_name AS displayName, up.program, up.bio
+                up.display_name AS displayName, up.program, up.bio, up.school, up.hashtags
             FROM users u
             LEFT JOIN user_profiles up ON u.user_id = up.user_id
             WHERE u.user_id = ?
